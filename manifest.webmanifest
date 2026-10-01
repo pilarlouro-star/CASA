@@ -1,0 +1,9 @@
+{
+  "name": "Casa Hermo Louro",
+  "short_name": "Casa",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f7f3ed",
+  "theme_color": "#f4efe7",
+  "icons": []
+}
