@@ -9,7 +9,7 @@
 main{max-width:680px;margin:auto;padding:24px 18px 60px}small{color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
 h1{font-size:2rem;margin:.25rem 0}.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin:14px 0}
 label{display:block;font-weight:650;margin:14px 0 6px}input{width:100%;font-size:16px;padding:13px;border:1px solid var(--line);border-radius:12px}
-button{border:0;border-radius:12px;padding:13px 16px;font-size:16px;font-weight:700;cursor:pointer}.primary,.done,.approve{background:var(--accent);color:white;width:100%;margin-top:14px}.secondary{background:var(--soft);color:var(--ink)}
+button{border:0;border-radius:12px;padding:13px 16px;font-size:16px;font-weight:700;cursor:pointer}.primary,.done,.approve{background:var(--accent);color:white;width:100%;margin-top:14px}.secondary{background:var(--soft);color:var(--ink)}.reject{background:var(--soft);color:var(--ink);width:100%;margin-top:8px;border:1px solid var(--line)}
 button:disabled{opacity:.55;cursor:default}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .pill{display:inline-block;background:var(--soft);border-radius:999px;padding:7px 11px;font-size:.9rem}.draft{background:var(--warn)}.approved{background:var(--ok)}
 .muted{color:var(--muted)}.metric{font-size:2rem;font-weight:800}.hidden{display:none!important}.error{color:#8b3434}
@@ -47,7 +47,7 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.4</footer></main>
+<footer>Casa Hermo Louro · v0.5</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -59,7 +59,7 @@ const status=s=>({pending:"Pendiente",completed:"Hecha · pendiente de aprobaci�
 
 async function markDone(id,btn){
  btn.disabled=true;btn.textContent="Guardando…";
- const r=await client.from("work_sessions").update({status:"completed",completed_at:new Date().toISOString()}).eq("id",id).eq("status","pending");
+ const r=await client.from("work_sessions").update({status:"completed",completed_at:new Date().toISOString()}).eq("id",id).in("status",["pending","rejected"]);
  if(r.error){btn.disabled=false;btn.textContent="✓ Marcar como hecha";alert("No se pudo guardar: "+r.error.message);return}
  const u=await client.auth.getUser();if(u.data.user)await loadChildSessions({id:u.data.user.id});
 }
@@ -68,6 +68,13 @@ async function approveSession(id,btn){
  btn.disabled=true;btn.textContent="Aprobando…";
  const r=await client.rpc("approve_family_session",{p_session_id:id});
  if(r.error){btn.disabled=false;btn.textContent="✓ Aprobar 30 min";alert("No se pudo aprobar: "+r.error.message);return}
+ await loadAdultSessions();
+}
+
+async function rejectSession(id,btn){
+ btn.disabled=true;btn.textContent="Devolviendo…";
+ const r=await client.rpc("reject_family_session",{p_session_id:id});
+ if(r.error){btn.disabled=false;btn.textContent="↩ Devolver para revisar";alert("No se pudo devolver: "+r.error.message);return}
  await loadAdultSessions();
 }
 
@@ -85,7 +92,7 @@ async function loadChildSessions(p){
    const own=ts.filter(t=>t.session_id===s.id);
    const list=own.length?'<ul class="tasks">'+own.map(t=>'<li>'+esc(t.description)+'</li>').join("")+'</ul>':
      '<div class="empty">'+(s.session_type==="thursday"?"Tarea variable: pendiente de decidir esta semana.":"Sin subtareas.")+'</div>';
-   const button=s.status==="pending"?'<button class="done" onclick="markDone('+s.id+',this)">✓ Marcar como hecha</button>':
+   const button=(s.status==="pending"||s.status==="rejected")?'<button class="done" onclick="markDone('+s.id+',this)">✓ Marcar como hecha</button>':
      s.status==="completed"?'<div class="notice"><strong>Enviada a Mamá/Papá para aprobación.</strong></div>':
      s.status==="approved"?'<div class="ok"><strong>✓ Aprobada: '+s.minutes+' minutos sumados.</strong></div>':"";
    return '<div class="session"><div class="row"><div><h3>'+esc(days[s.session_type]||s.session_date)+' · '+esc(s.title)+'</h3><span class="muted">'+s.minutes+' min</span></div><span class="pill">'+esc(status(s.status))+'</span></div>'+list+button+'</div>';
