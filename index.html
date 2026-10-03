@@ -37,17 +37,17 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
   <div class="row"><div><div class="muted">Sesiones previstas</div><div id="adultCount" class="metric">0</div></div>
   <div><div class="muted">Pendientes de aprobación</div><div id="pendingCount" class="metric">0</div></div></div>
  </div>
- <div class="card"><div class="row"><h2>Trabajo de las niñas</h2><span id="adultBadge" class="pill"></span></div><div id="adultSessions">Cargando…</div></div>
+ <div class="card"><div class="row"><h2>Trabajo de las niñas</h2><span id="adultBadge" class="pill"></span></div><div id="adultSessions">Cargando…</div></div><div class="card"><h2>Rentas semanales</h2><div id="adultAllowances">Cargando…</div></div>
 </div>
 
 <div id="child" class="hidden">
  <div class="card"><h2>Mi semana</h2><div class="metric"><span id="approved">0</span> / <span id="target">90</span> min</div>
- <progress id="progress" value="0" max="90"></progress><p>Renta semanal: <strong><span id="allowance">5</span> €</strong></p></div>
+ <progress id="progress" value="0" max="90"></progress><p>Renta semanal: <strong><span id="allowance">5</span> €</strong></p><div id="allowanceState"></div></div>
  <div class="card"><div class="row"><h2>Mis tareas</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div>
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.5</footer></main>
+<footer>Casa Hermo Louro · v0.6</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -123,6 +123,41 @@ async function loadAdultSessions(){
  }).join("");
 }
 
+
+async function claimAllowance(weekId,btn){
+ btn.disabled=true;btn.textContent="Solicitando…";
+ const r=await client.rpc("claim_own_allowance",{p_week_id:weekId});
+ if(r.error){btn.disabled=false;btn.textContent="Solicitar renta";alert("No se pudo solicitar: "+r.error.message);return}
+ const u=await client.auth.getUser();if(u.data.user)await loadChildAllowance(u.data.user.id);
+}
+async function payAllowance(id,btn){
+ btn.disabled=true;btn.textContent="Guardando…";
+ const r=await client.rpc("pay_family_allowance",{p_allowance_id:id});
+ if(r.error){btn.disabled=false;btn.textContent="Marcar como pagada";alert("No se pudo marcar como pagada: "+r.error.message);return}
+ await loadAdultAllowances();
+}
+async function loadChildAllowance(childId){
+ const r=await client.from("weekly_allowances").select("id,week_id,amount,status,earned_at,claimed_at,paid_at").eq("child_id",childId).order("id",{ascending:false}).limit(1);
+ if(r.error){q("#allowanceState").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
+ const a=(r.data||[])[0]; if(!a){q("#allowanceState").innerHTML='<p class="muted">Sin renta semanal registrada.</p>';return}
+ q("#allowance").textContent=a.amount;
+ const labels={locked:"🔒 Aún no conseguida",earned:"🎉 ¡Renta conseguida!",claimed:"⏳ Solicitada a Mamá/Papá",paid:"✓ Pagada"};
+ let action=a.status==="earned"?'<button class="done" onclick="claimAllowance('+a.week_id+',this)">Solicitar renta</button>':"";
+ q("#allowanceState").innerHTML='<div class="'+(a.status==="paid"?"ok":"notice")+'"><strong>'+labels[a.status]+'</strong></div>'+action;
+}
+async function loadAdultAllowances(){
+ const r=await client.from("weekly_allowances").select("id,child_id,week_id,amount,status").order("id");
+ if(r.error){q("#adultAllowances").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
+ const aa=r.data||[]; if(!aa.length){q("#adultAllowances").innerHTML='<p class="muted">No hay rentas registradas.</p>';return}
+ const ids=[...new Set(aa.map(a=>a.child_id))];
+ const pr=await client.from("profiles").select("id,name").in("id",ids); const names={};
+ if(!pr.error)(pr.data||[]).forEach(p=>names[p.id]=p.name);
+ const labels={locked:"Bloqueada",earned:"Conseguida",claimed:"Solicitada",paid:"Pagada"};
+ q("#adultAllowances").innerHTML=aa.map(a=>{
+   const action=a.status==="claimed"?'<button class="approve" onclick="payAllowance('+a.id+',this)">€ Marcar como pagada</button>':"";
+   return '<div class="session"><div class="row"><div><h3>'+esc(names[a.child_id]||"Miembro de la familia")+'</h3><span class="muted">'+a.amount+' €</span></div><span class="pill">'+labels[a.status]+'</span></div>'+action+'</div>';
+ }).join("");
+}
 async function show(user){
  const r=await client.from("profiles").select("id,family_id,name,role,weekly_allowance,weekly_minutes").eq("id",user.id).single();
  q("#login").classList.add("hidden");q("#app").classList.remove("hidden");
@@ -132,8 +167,10 @@ async function show(user){
  if(p.role==="child"){
    q("#target").textContent=p.weekly_minutes??90;q("#progress").max=p.weekly_minutes??90;q("#allowance").textContent=p.weekly_allowance??5;
    await loadChildSessions(p);
+   await loadChildAllowance(p.id);
  }else{
    await loadAdultSessions();
+   await loadAdultAllowances();
  }
 }
 
