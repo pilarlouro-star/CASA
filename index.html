@@ -15,7 +15,7 @@ button:disabled{opacity:.55;cursor:default}.row{display:flex;gap:10px;flex-wrap:
 .muted{color:var(--muted)}.metric{font-size:2rem;font-weight:800}.hidden{display:none!important}.error{color:#8b3434}
 progress{width:100%;height:14px}.session{border-top:1px solid var(--line);padding:16px 0}.session:first-child{border-top:0;padding-top:0}
 .session h3{margin:0 0 5px}.tasks{margin:10px 0 0;padding-left:22px}.tasks li{margin:7px 0}.empty{padding:10px 0;color:var(--muted)}
-.notice{background:var(--warn);border-radius:14px;padding:12px 14px;margin:10px 0}.ok{background:var(--ok);border-radius:14px;padding:12px 14px;margin:10px 0}
+.notice{background:var(--warn);border-radius:14px;padding:12px 14px;margin:10px 0}.weekbox{border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}.editrow{display:flex;gap:8px;margin-top:10px}.editrow input{margin:0}.publish{background:var(--accent);color:white;width:100%;margin-top:12px}.ok{background:var(--ok);border-radius:14px;padding:12px 14px;margin:10px 0}
 footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 </style></head>
 <body><main>
@@ -31,15 +31,12 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 <p class="muted">Casa Hermo Louro</p><button id="out" class="secondary">Cerrar sesión</button></div>
 
 <div id="adult" class="hidden">
- <div class="card">
-  <div class="row"><h2>Semana 5–11 octubre</h2><span class="pill draft">Borrador</span></div>
-  <p class="muted">Aquí aparecen las sesiones familiares. Las que las niñas marquen como hechas quedan pendientes de aprobación.</p>
-  <div class="row"><div><div class="muted">Sesiones previstas</div><div id="adultCount" class="metric">0</div></div>
-  <div><div class="muted">Pendientes de aprobación</div><div id="pendingCount" class="metric">0</div></div></div>
- </div>
- <div class="card"><div class="row"><h2>Trabajo de las niñas</h2><span id="adultBadge" class="pill"></span></div><div id="adultSessions">Cargando…</div></div><div class="card"><h2>Rentas semanales</h2><div id="adultAllowances">Cargando…</div></div>
+ <div class="card"><div class="row"><div><small>Gestión semanal</small><h2 id="weekTitle">Semanas de la familia</h2></div><span id="weekStatus" class="pill">—</span></div>
+ <p class="muted">Prepara la siguiente semana, personaliza el jueves y publícala cuando esté lista.</p><button id="prepareWeek" class="primary" type="button">＋ Preparar nueva semana</button><div id="weekManager"></div></div>
+ <div class="card"><div class="row"><h2>Seguimiento</h2><span id="adultBadge" class="pill"></span></div><div class="row"><div><div class="muted">Sesiones visibles</div><div id="adultCount" class="metric">0</div></div><div><div class="muted">Pendientes de aprobación</div><div id="pendingCount" class="metric">0</div></div></div></div>
+ <div class="card"><h2>Trabajo de las niñas</h2><div id="adultSessions">Cargando…</div></div>
+ <div class="card"><h2>Rentas semanales</h2><div id="adultAllowances">Cargando…</div></div>
 </div>
-
 <div id="child" class="hidden">
  <div class="card"><h2>Mi semana</h2><div class="metric"><span id="approved">0</span> / <span id="target">90</span> min</div>
  <progress id="progress" value="0" max="90"></progress><p>Renta semanal: <strong><span id="allowance">5</span> €</strong></p><div id="allowanceState"></div></div>
@@ -47,7 +44,7 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.6</footer></main>
+<footer>Casa Hermo Louro · v0.7</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -98,6 +95,14 @@ async function loadChildSessions(p){
    return '<div class="session"><div class="row"><div><h3>'+esc(days[s.session_type]||s.session_date)+' · '+esc(s.title)+'</h3><span class="muted">'+s.minutes+' min</span></div><span class="pill">'+esc(status(s.status))+'</span></div>'+list+button+'</div>';
  }).join("");
 }
+
+function fmtDate(s){return new Date(s+"T12:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"short"})}
+function addDays(s,n){let d=new Date(s+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+function nextMonday(){let d=new Date();d.setHours(12,0,0,0);let x=(8-d.getDay())%7||7;d.setDate(d.getDate()+x);return d.toISOString().slice(0,10)}
+async function prepareNewWeek(){let b=q("#prepareWeek");b.disabled=true;b.textContent="Preparando…";try{let c=await client.rpc("create_family_week",{p_week_start:nextMonday()});if(c.error)throw c.error;let g=await client.rpc("generate_week_sessions",{p_week_id:c.data});if(g.error)throw g.error;await loadWeekManager();await loadAdultSessions()}catch(e){alert("No se pudo preparar: "+e.message)}finally{b.disabled=false;b.textContent="＋ Preparar nueva semana"}}
+async function saveDraftTitle(id,b){let i=document.getElementById("title_"+id),r=await client.rpc("update_draft_session",{p_session_id:id,p_title:i.value.trim()});if(r.error)alert(r.error.message);else{b.textContent="✓ Guardado";setTimeout(()=>b.textContent="Guardar",900)}}
+async function publishWeek(id){if(!confirm("¿Publicar esta semana?"))return;let r=await client.rpc("publish_family_week",{p_week_id:id});if(r.error)alert(r.error.message);else await loadWeekManager()}
+async function loadWeekManager(){let wr=await client.from("weeks").select("id,week_start,status").order("week_start",{ascending:false}).limit(6);if(wr.error){q("#weekManager").innerHTML='<p class="error">'+esc(wr.error.message)+'</p>';return}let ww=wr.data||[];if(!ww.length){q("#weekManager").innerHTML='<p class="muted">Todavía no hay semanas.</p>';return}let w=ww.find(x=>x.status==="draft")||ww[0];q("#weekTitle").textContent="Semana "+fmtDate(w.week_start)+" – "+fmtDate(addDays(w.week_start,6));q("#weekStatus").textContent=w.status==="draft"?"Borrador":w.status==="published"?"Publicada":"Cerrada";let sr=await client.from("work_sessions").select("id,assigned_to,session_date,session_type,title,minutes").eq("week_id",w.id).order("assigned_to").order("session_date");if(sr.error){q("#weekManager").innerHTML='<p class="error">'+esc(sr.error.message)+'</p>';return}let ss=sr.data||[],ids=[...new Set(ss.map(x=>x.assigned_to))],names={};if(ids.length){let pr=await client.from("profiles").select("id,name").in("id",ids);if(!pr.error)(pr.data||[]).forEach(x=>names[x.id]=x.name)}let body=ss.map(s=>{let edit=w.status==="draft"&&s.session_type==="thursday"?'<div class="editrow"><input id="title_'+s.id+'" value="'+esc(s.title)+'"><button class="secondary" onclick="saveDraftTitle('+s.id+',this)">Guardar</button></div>':"";return '<div class="session"><strong>'+esc(names[s.assigned_to]||"Miembro")+' · '+fmtDate(s.session_date)+'</strong><div>'+esc(s.title)+' · '+s.minutes+' min</div>'+edit+'</div>'}).join("");if(w.status==="draft")body+='<button class="publish" onclick="publishWeek('+w.id+')">Publicar semana</button>';q("#weekManager").innerHTML='<div class="weekbox">'+body+'</div>'}
 
 async function loadAdultSessions(){
  const r=await client.from("work_sessions").select("id,assigned_to,session_date,session_type,title,minutes,status").order("assigned_to").order("session_date");
@@ -169,6 +174,7 @@ async function show(user){
    await loadChildSessions(p);
    await loadChildAllowance(p.id);
  }else{
+   await loadWeekManager();
    await loadAdultSessions();
    await loadAdultAllowances();
  }
@@ -180,6 +186,6 @@ q("#form").addEventListener("submit",async e=>{
  if(r.error){q("#msg").textContent="No se pudo entrar: "+r.error.message;q("#msg").className="error";return}
  await show(r.data.user);
 });
-q("#out").addEventListener("click",async()=>{await client.auth.signOut();location.reload()});
+q("#prepareWeek").addEventListener("click",prepareNewWeek);q("#out").addEventListener("click",async()=>{await client.auth.signOut();location.reload()});
 (async()=>{const r=await client.auth.getSession();if(r.data.session?.user)await show(r.data.session.user)})();
 </script></body></html>
