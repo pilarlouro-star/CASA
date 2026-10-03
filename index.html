@@ -1,14 +1,141 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4efe7"><title>Casa Hermo Louro</title><style>
-:root{--bg:#f7f3ed;--card:#fffdf9;--ink:#25312b;--muted:#68736d;--line:#ded8cf;--accent:#587363;--soft:#e7eee9;--warn:#f3e7bc}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}main{max-width:680px;margin:auto;padding:24px 18px 60px}small{color:var(--muted);letter-spacing:.12em;text-transform:uppercase}h1{font-size:2rem;margin:.25rem 0}.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin:14px 0}label{display:block;font-weight:650;margin:14px 0 6px}input{width:100%;font-size:16px;padding:13px;border:1px solid var(--line);border-radius:12px}button{border:0;border-radius:12px;padding:13px 16px;font-size:16px;font-weight:700;cursor:pointer}.primary,.done{background:var(--accent);color:white;width:100%;margin-top:14px}.secondary{background:var(--soft)}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}.pill{display:inline-block;background:var(--soft);border-radius:999px;padding:7px 11px;font-size:.9rem}.draft{background:var(--warn)}.muted{color:var(--muted)}.metric{font-size:2rem;font-weight:800}.hidden{display:none!important}.error{color:#8b3434}progress{width:100%;height:14px}.session{border-top:1px solid var(--line);padding:16px 0}.session:first-child{border-top:0}.session h3{margin:0 0 5px}.tasks{padding-left:22px}.tasks li{margin:7px 0}footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}</style></head><body><main>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f4efe7"><title>Casa Hermo Louro</title>
+<style>
+:root{--bg:#f7f3ed;--card:#fffdf9;--ink:#25312b;--muted:#68736d;--line:#ded8cf;--accent:#587363;--soft:#e7eee9;--warn:#f3e7bc;--ok:#dfece3}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
+main{max-width:680px;margin:auto;padding:24px 18px 60px}small{color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+h1{font-size:2rem;margin:.25rem 0}.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin:14px 0}
+label{display:block;font-weight:650;margin:14px 0 6px}input{width:100%;font-size:16px;padding:13px;border:1px solid var(--line);border-radius:12px}
+button{border:0;border-radius:12px;padding:13px 16px;font-size:16px;font-weight:700;cursor:pointer}.primary,.done,.approve{background:var(--accent);color:white;width:100%;margin-top:14px}.secondary{background:var(--soft);color:var(--ink)}
+button:disabled{opacity:.55;cursor:default}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.pill{display:inline-block;background:var(--soft);border-radius:999px;padding:7px 11px;font-size:.9rem}.draft{background:var(--warn)}.approved{background:var(--ok)}
+.muted{color:var(--muted)}.metric{font-size:2rem;font-weight:800}.hidden{display:none!important}.error{color:#8b3434}
+progress{width:100%;height:14px}.session{border-top:1px solid var(--line);padding:16px 0}.session:first-child{border-top:0;padding-top:0}
+.session h3{margin:0 0 5px}.tasks{margin:10px 0 0;padding-left:22px}.tasks li{margin:7px 0}.empty{padding:10px 0;color:var(--muted)}
+.notice{background:var(--warn);border-radius:14px;padding:12px 14px;margin:10px 0}.ok{background:var(--ok);border-radius:14px;padding:12px 14px;margin:10px 0}
+footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
+</style></head>
+<body><main>
 <header><small>Organización familiar</small><h1>🏠 Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></header>
-<section id="login" class="card"><h2>Entrar</h2><form id="form"><label>Correo</label><input id="email" type="email" required><label>Contraseña</label><input id="password" type="password" required><button class="primary">Entrar en casa</button><p id="msg"></p></form></section>
-<section id="app" class="hidden"><div class="card"><div class="row"><div><span class="muted">Hola,</span><h2 id="name"></h2></div><span id="role" class="pill"></span></div><p class="muted">Casa Hermo Louro</p><button id="out" class="secondary">Cerrar sesión</button></div>
-<div id="adult" class="card hidden"><div class="row"><h2>Semana 5–11 octubre</h2><span class="pill draft">Borrador</span></div><p class="muted">La semana está preparada. El siguiente paso será aprobar desde aquí las sesiones terminadas.</p><div class="row"><div><div class="muted">Sesiones previstas</div><div class="metric">9</div></div><div><div class="muted">Trabajo familiar</div><div class="metric">270 min</div></div></div></div>
-<div id="child" class="hidden"><div class="card"><h2>Mi semana</h2><div class="metric"><span id="approved">0</span> / <span id="target">90</span> min</div><progress id="progress" value="0" max="90"></progress><p>Renta semanal: <strong><span id="allowance">5</span> €</strong></p></div><div class="card"><div class="row"><h2>Mis tareas</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div></div><div id="err" class="card hidden"></div></section><footer>Casa Hermo Louro · v0.3</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const client=supabase.createClient("https://yvrqhrpdguhjysprttvk.supabase.co","sb_publishable_9cdyn8onZ_yI3akKMz1CJQ_K1Mqcrs4",{auth:{persistSession:true,autoRefreshToken:true}}),q=s=>document.querySelector(s),days={tuesday:"Martes 6",wednesday:"Miércoles 7",thursday:"Jueves 8"},esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c])),st=s=>({pending:"Pendiente",completed:"Hecha · pendiente de aprobación",approved:"Aprobada",rejected:"Revisar"}[s]||s);
-async function done(id,b){b.disabled=true;b.textContent="Guardando…";let r=await client.from("work_sessions").update({status:"completed",completed_at:new Date().toISOString()}).eq("id",id).eq("status","pending");if(r.error){b.disabled=false;b.textContent="✓ Marcar como hecha";alert(r.error.message);return}let u=await client.auth.getUser();await sessions({id:u.data.user.id})}
-async function sessions(p){let r=await client.from("work_sessions").select("id,session_date,session_type,title,minutes,status").eq("assigned_to",p.id).order("session_date");if(r.error){q("#sessions").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}let ss=r.data||[];q("#count").textContent=ss.length+" sesiones";let a=ss.filter(s=>s.status==="approved").reduce((n,s)=>n+(s.minutes||0),0);q("#approved").textContent=a;q("#progress").value=a;if(!ss.length){q("#sessions").innerHTML='<p class="muted">Todavía no tienes sesiones asignadas.</p>';return}let tr=await client.from("session_tasks").select("session_id,description,position").in("session_id",ss.map(s=>s.id)).order("position");if(tr.error){q("#sessions").innerHTML='<p class="error">'+esc(tr.error.message)+'</p>';return}let ts=tr.data||[];q("#sessions").innerHTML=ss.map(s=>{let own=ts.filter(t=>t.session_id===s.id),list=own.length?'<ul class="tasks">'+own.map(t=>'<li>'+esc(t.description)+'</li>').join("")+'</ul>':'<p class="muted">'+(s.session_type==="thursday"?"Tarea variable: pendiente de decidir esta semana.":"Sin subtareas.")+'</p>',btn=s.status==="pending"?'<button class="done" onclick="done('+s.id+',this)">✓ Marcar como hecha</button>':s.status==="completed"?'<p class="muted"><strong>Enviada a Mamá/Papá para aprobación.</strong></p>':"";return '<div class="session"><div class="row"><div><h3>'+esc(days[s.session_type]||s.session_date)+' · '+esc(s.title)+'</h3><span class="muted">'+s.minutes+' min</span></div><span class="pill">'+esc(st(s.status))+'</span></div>'+list+btn+'</div>'}).join("")}
-async function show(u){let r=await client.from("profiles").select("id,name,role,weekly_allowance,weekly_minutes").eq("id",u.id).single();q("#login").classList.add("hidden");q("#app").classList.remove("hidden");if(r.error||!r.data){q("#err").classList.remove("hidden");q("#err").textContent=r.error?.message||"Perfil no encontrado";return}let p=r.data;q("#name").textContent=p.name;q("#role").textContent=p.role==="adult"?"Adulto":"Miembro joven";q("#adult").classList.toggle("hidden",p.role!=="adult");q("#child").classList.toggle("hidden",p.role!=="child");if(p.role==="child"){q("#target").textContent=p.weekly_minutes??90;q("#progress").max=p.weekly_minutes??90;q("#allowance").textContent=p.weekly_allowance??5;await sessions(p)}}
-q("#form").addEventListener("submit",async e=>{e.preventDefault();let r=await client.auth.signInWithPassword({email:q("#email").value.trim(),password:q("#password").value});if(r.error){q("#msg").textContent="No se pudo entrar: "+r.error.message;return}await show(r.data.user)});q("#out").onclick=async()=>{await client.auth.signOut();location.reload()};(async()=>{let r=await client.auth.getSession();if(r.data.session?.user)await show(r.data.session.user)})();
+
+<section id="login" class="card"><h2>Entrar</h2><p class="muted">Usa tu cuenta familiar.</p><form id="form">
+<label>Correo</label><input id="email" type="email" autocomplete="username" required>
+<label>Contraseña</label><input id="password" type="password" autocomplete="current-password" required>
+<button class="primary">Entrar en casa</button><p id="msg"></p></form></section>
+
+<section id="app" class="hidden">
+<div class="card"><div class="row"><div><span class="muted">Hola,</span><h2 id="name"></h2></div><span id="role" class="pill"></span></div>
+<p class="muted">Casa Hermo Louro</p><button id="out" class="secondary">Cerrar sesión</button></div>
+
+<div id="adult" class="hidden">
+ <div class="card">
+  <div class="row"><h2>Semana 5–11 octubre</h2><span class="pill draft">Borrador</span></div>
+  <p class="muted">Aquí aparecen las sesiones familiares. Las que las niñas marquen como hechas quedan pendientes de aprobación.</p>
+  <div class="row"><div><div class="muted">Sesiones previstas</div><div id="adultCount" class="metric">0</div></div>
+  <div><div class="muted">Pendientes de aprobación</div><div id="pendingCount" class="metric">0</div></div></div>
+ </div>
+ <div class="card"><div class="row"><h2>Trabajo de las niñas</h2><span id="adultBadge" class="pill"></span></div><div id="adultSessions">Cargando…</div></div>
+</div>
+
+<div id="child" class="hidden">
+ <div class="card"><h2>Mi semana</h2><div class="metric"><span id="approved">0</span> / <span id="target">90</span> min</div>
+ <progress id="progress" value="0" max="90"></progress><p>Renta semanal: <strong><span id="allowance">5</span> €</strong></p></div>
+ <div class="card"><div class="row"><h2>Mis tareas</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div>
+</div>
+<div id="err" class="card hidden"></div>
+</section>
+<footer>Casa Hermo Louro · v0.4</footer></main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const client=supabase.createClient("https://yvrqhrpdguhjysprttvk.supabase.co","sb_publishable_9cdyn8onZ_yI3akKMz1CJQ_K1Mqcrs4",{auth:{persistSession:true,autoRefreshToken:true}});
+const q=s=>document.querySelector(s);
+const days={tuesday:"Martes 6",wednesday:"Miércoles 7",thursday:"Jueves 8"};
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const status=s=>({pending:"Pendiente",completed:"Hecha · pendiente de aprobación",approved:"Aprobada",rejected:"Revisar"}[s]||s);
+
+async function markDone(id,btn){
+ btn.disabled=true;btn.textContent="Guardando…";
+ const r=await client.from("work_sessions").update({status:"completed",completed_at:new Date().toISOString()}).eq("id",id).eq("status","pending");
+ if(r.error){btn.disabled=false;btn.textContent="✓ Marcar como hecha";alert("No se pudo guardar: "+r.error.message);return}
+ const u=await client.auth.getUser();if(u.data.user)await loadChildSessions({id:u.data.user.id});
+}
+
+async function approveSession(id,btn){
+ btn.disabled=true;btn.textContent="Aprobando…";
+ const r=await client.rpc("approve_family_session",{p_session_id:id});
+ if(r.error){btn.disabled=false;btn.textContent="✓ Aprobar 30 min";alert("No se pudo aprobar: "+r.error.message);return}
+ await loadAdultSessions();
+}
+
+async function loadChildSessions(p){
+ const r=await client.from("work_sessions").select("id,session_date,session_type,title,minutes,status").eq("assigned_to",p.id).order("session_date");
+ if(r.error){q("#sessions").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
+ const ss=r.data||[];q("#count").textContent=ss.length+" sesiones";
+ const approved=ss.filter(s=>s.status==="approved").reduce((n,s)=>n+(s.minutes||0),0);
+ q("#approved").textContent=approved;q("#progress").value=approved;
+ if(!ss.length){q("#sessions").innerHTML='<p class="muted">Todavía no tienes sesiones asignadas.</p>';return}
+ const tr=await client.from("session_tasks").select("session_id,description,position").in("session_id",ss.map(s=>s.id)).order("position");
+ if(tr.error){q("#sessions").innerHTML='<p class="error">'+esc(tr.error.message)+'</p>';return}
+ const ts=tr.data||[];
+ q("#sessions").innerHTML=ss.map(s=>{
+   const own=ts.filter(t=>t.session_id===s.id);
+   const list=own.length?'<ul class="tasks">'+own.map(t=>'<li>'+esc(t.description)+'</li>').join("")+'</ul>':
+     '<div class="empty">'+(s.session_type==="thursday"?"Tarea variable: pendiente de decidir esta semana.":"Sin subtareas.")+'</div>';
+   const button=s.status==="pending"?'<button class="done" onclick="markDone('+s.id+',this)">✓ Marcar como hecha</button>':
+     s.status==="completed"?'<div class="notice"><strong>Enviada a Mamá/Papá para aprobación.</strong></div>':
+     s.status==="approved"?'<div class="ok"><strong>✓ Aprobada: '+s.minutes+' minutos sumados.</strong></div>':"";
+   return '<div class="session"><div class="row"><div><h3>'+esc(days[s.session_type]||s.session_date)+' · '+esc(s.title)+'</h3><span class="muted">'+s.minutes+' min</span></div><span class="pill">'+esc(status(s.status))+'</span></div>'+list+button+'</div>';
+ }).join("");
+}
+
+async function loadAdultSessions(){
+ const r=await client.from("work_sessions").select("id,assigned_to,session_date,session_type,title,minutes,status").order("assigned_to").order("session_date");
+ if(r.error){q("#adultSessions").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
+ const ss=r.data||[];
+ q("#adultCount").textContent=ss.length;
+ const pending=ss.filter(s=>s.status==="completed").length;
+ q("#pendingCount").textContent=pending;
+ q("#adultBadge").textContent=pending?pending+" por aprobar":"Todo revisado";
+ if(!ss.length){q("#adultSessions").innerHTML='<p class="muted">No hay sesiones familiares.</p>';return}
+
+ const ids=[...new Set(ss.map(s=>s.assigned_to))];
+ const pr=await client.from("profiles").select("id,name").in("id",ids);
+ const names={};
+ if(!pr.error)(pr.data||[]).forEach(p=>names[p.id]=p.name);
+
+ q("#adultSessions").innerHTML=ss.map(s=>{
+   const who=names[s.assigned_to]||"Miembro de la familia";
+   const action=s.status==="completed"
+     ?'<button class="approve" onclick="approveSession('+s.id+',this)">✓ Aprobar '+s.minutes+' min</button>'
+     :s.status==="approved"?'<div class="ok"><strong>✓ Aprobada</strong></div>':"";
+   return '<div class="session"><div class="row"><div><h3>'+esc(who)+' · '+esc(days[s.session_type]||s.session_date)+'</h3><div>'+esc(s.title)+' · '+s.minutes+' min</div></div><span class="pill">'+esc(status(s.status))+'</span></div>'+action+'</div>';
+ }).join("");
+}
+
+async function show(user){
+ const r=await client.from("profiles").select("id,family_id,name,role,weekly_allowance,weekly_minutes").eq("id",user.id).single();
+ q("#login").classList.add("hidden");q("#app").classList.remove("hidden");
+ if(r.error||!r.data){q("#err").classList.remove("hidden");q("#err").innerHTML='<p class="error">'+esc(r.error?.message||"Perfil no encontrado")+'</p>';return}
+ const p=r.data;q("#name").textContent=p.name;q("#role").textContent=p.role==="adult"?"Adulto":"Miembro joven";
+ q("#adult").classList.toggle("hidden",p.role!=="adult");q("#child").classList.toggle("hidden",p.role!=="child");
+ if(p.role==="child"){
+   q("#target").textContent=p.weekly_minutes??90;q("#progress").max=p.weekly_minutes??90;q("#allowance").textContent=p.weekly_allowance??5;
+   await loadChildSessions(p);
+ }else{
+   await loadAdultSessions();
+ }
+}
+
+q("#form").addEventListener("submit",async e=>{
+ e.preventDefault();q("#msg").textContent="Entrando…";
+ const r=await client.auth.signInWithPassword({email:q("#email").value.trim(),password:q("#password").value});
+ if(r.error){q("#msg").textContent="No se pudo entrar: "+r.error.message;q("#msg").className="error";return}
+ await show(r.data.user);
+});
+q("#out").addEventListener("click",async()=>{await client.auth.signOut();location.reload()});
+(async()=>{const r=await client.auth.getSession();if(r.data.session?.user)await show(r.data.session.user)})();
 </script></body></html>
