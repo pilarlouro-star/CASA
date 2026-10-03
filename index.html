@@ -44,7 +44,7 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.9</footer></main>
+<footer>Casa Hermo Louro · v0.10</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -56,7 +56,7 @@ const status=s=>({pending:"Pendiente",completed:"Hecha · pendiente de aprobaci�
 
 async function markDone(id,btn){
  btn.disabled=true;btn.textContent="Guardando…";
- const r=await client.from("work_sessions").update({status:"completed",completed_at:new Date().toISOString()}).eq("id",id).in("status",["pending","rejected"]);
+ const r=await client.rpc("complete_own_session",{p_session_id:id});
  if(r.error){btn.disabled=false;btn.textContent="✓ Marcar como hecha";alert("No se pudo guardar: "+r.error.message);return}
  const u=await client.auth.getUser();if(u.data.user)await loadChildSessions({id:u.data.user.id});
 }
