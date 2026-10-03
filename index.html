@@ -44,7 +44,7 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.8</footer></main>
+<footer>Casa Hermo Louro · v0.9</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -76,26 +76,45 @@ async function rejectSession(id,btn){
 }
 
 async function loadChildSessions(p){
- const r=await client.from("work_sessions").select("id,session_date,session_type,title,minutes,status").eq("assigned_to",p.id).order("session_date");
+ const r=await client.from("work_sessions").select("id,week_id,session_date,session_type,title,minutes,status").eq("assigned_to",p.id).order("session_date",{ascending:false});
  if(r.error){q("#sessions").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
  const ss=r.data||[];q("#count").textContent=ss.length+" sesiones";
- const approved=ss.filter(s=>s.status==="approved").reduce((n,s)=>n+(s.minutes||0),0);
+ const weekIds=[...new Set(ss.map(s=>s.week_id).filter(Boolean))];
+ let weeks={};
+ if(weekIds.length){
+   const wr=await client.from("weeks").select("id,week_start,status").in("id",weekIds);
+   if(!wr.error)(wr.data||[]).forEach(w=>weeks[w.id]=w);
+ }
+ const latestStart=Object.values(weeks).map(w=>w.week_start).sort().reverse()[0]||null;
+ const currentSessions=latestStart?ss.filter(s=>weeks[s.week_id]?.week_start===latestStart):ss;
+ const approved=currentSessions.filter(s=>s.status==="approved").reduce((n,s)=>n+(s.minutes||0),0);
  q("#approved").textContent=approved;q("#progress").value=approved;
  if(!ss.length){q("#sessions").innerHTML='<p class="muted">Todavía no tienes sesiones asignadas.</p>';return}
  const tr=await client.from("session_tasks").select("session_id,description,position").in("session_id",ss.map(s=>s.id)).order("position");
  if(tr.error){q("#sessions").innerHTML='<p class="error">'+esc(tr.error.message)+'</p>';return}
  const ts=tr.data||[];
- q("#sessions").innerHTML=ss.map(s=>{
+ const groups={};
+ ss.forEach(s=>{const key=weeks[s.week_id]?.week_start||s.session_date; (groups[key]??=[]).push(s)});
+ const starts=Object.keys(groups).sort().reverse();
+ const dayName=s=>new Date(s+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+ const renderSession=s=>{
    const own=ts.filter(t=>t.session_id===s.id);
    const list=own.length?'<ul class="tasks">'+own.map(t=>'<li>'+esc(t.description)+'</li>').join("")+'</ul>':
-     '<div class="empty">'+(s.session_type==="thursday"?"Tarea variable: pendiente de decidir esta semana.":"Sin subtareas.")+'</div>';
+     '<div class="empty">'+(s.session_type==="thursday"?"Tarea variable: "+esc(s.title)+".":"Sin subtareas.")+'</div>';
    const button=(s.status==="pending"||s.status==="rejected")?'<button class="done" onclick="markDone('+s.id+',this)">✓ Marcar como hecha</button>':
      s.status==="completed"?'<div class="notice"><strong>Enviada a Mamá/Papá para aprobación.</strong></div>':
      s.status==="approved"?'<div class="ok"><strong>✓ Aprobada: '+s.minutes+' minutos sumados.</strong></div>':"";
-   return '<div class="session"><div class="row"><div><h3>'+esc(days[s.session_type]||s.session_date)+' · '+esc(s.title)+'</h3><span class="muted">'+s.minutes+' min</span></div><span class="pill">'+esc(status(s.status))+'</span></div>'+list+button+'</div>';
+   const date=dayName(s.session_date);
+   return '<div class="session"><div class="row"><div><h3 style="text-transform:capitalize">'+esc(date)+' · '+esc(s.title)+'</h3><span class="muted">'+s.minutes+' min</span></div><span class="pill">'+esc(status(s.status))+'</span></div>'+list+button+'</div>';
+ };
+ q("#sessions").innerHTML=starts.map((start,idx)=>{
+   const w=weeks[groups[start][0].week_id];
+   const end=w?addDays(w.week_start,6):start;
+   const label='Semana '+fmtDate(start)+' – '+fmtDate(end);
+   const tag=idx===0?'<span class="pill approved">Actual</span>':'<span class="pill">Historial</span>';
+   return '<section class="weekbox"><div class="row"><h3>'+esc(label)+'</h3>'+tag+'</div>'+groups[start].sort((x,y)=>x.session_date.localeCompare(y.session_date)).map(renderSession).join("")+'</section>';
  }).join("");
 }
-
 function fmtDate(s){return new Date(s+"T12:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"short"})}
 function addDays(s,n){let d=new Date(s+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
 function nextMonday(){let d=new Date();d.setHours(12,0,0,0);let x=(8-d.getDay())%7||7;d.setDate(d.getDate()+x);return d.toISOString().slice(0,10)}
