@@ -17,6 +17,14 @@ progress{width:100%;height:14px}.session{border-top:1px solid var(--line);paddin
 .session h3{margin:0 0 5px}.tasks{margin:10px 0 0;padding-left:22px}.tasks li{margin:7px 0}.empty{padding:10px 0;color:var(--muted)}
 .notice{background:var(--warn);border-radius:14px;padding:12px 14px;margin:10px 0}.weekbox{border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}.editrow{display:flex;gap:8px;margin-top:10px}.editrow input{margin:0}.publish{background:var(--accent);color:white;width:100%;margin-top:12px}.ok{background:var(--ok);border-radius:14px;padding:12px 14px;margin:10px 0}
 footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
+
+.app-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 14px;margin:0 0 4px;scrollbar-width:none}
+.app-tabs::-webkit-scrollbar{display:none}
+.app-tab{flex:1;min-width:max-content;border:1px solid #d9dee7;background:#fff;color:#596273;border-radius:14px;padding:11px 14px;font-weight:700;box-shadow:0 2px 8px rgba(25,35,55,.04);cursor:pointer}
+.app-tab.active{background:#263b5a;color:#fff;border-color:#263b5a;box-shadow:0 5px 14px rgba(38,59,90,.18)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+@media(max-width:620px){.app-tab{padding:10px 12px}.app-tab span{font-size:.9rem}}
 </style></head>
 <body><main>
 <header><small>Organización familiar</small><h1>🏠 Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></header>
@@ -31,36 +39,47 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 <p class="muted">Casa Hermo Louro</p><button id="out" class="secondary">Cerrar sesión</button></div>
 
 <div id="adult" class="hidden">
- <div class="card"><div class="row"><div><small>Gestión semanal</small><h2 id="weekTitle">Semanas de la familia</h2></div><span id="weekStatus" class="pill">—</span></div>
- <p class="muted">Prepara la siguiente semana, personaliza el jueves y publícala cuando esté lista.</p><button id="prepareWeek" class="primary" type="button">＋ Preparar nueva semana</button><div id="weekManager"></div></div>
- <div class="card"><div class="row"><h2>Seguimiento</h2><span id="adultBadge" class="pill"></span></div><div class="row"><div><div class="muted">Sesiones visibles</div><div id="adultCount" class="metric">0</div></div><div><div class="muted">Pendientes de aprobación</div><div id="pendingCount" class="metric">0</div></div></div></div>
- <div class="card">
- <div class="row"><div><small>Trabajo compartido</small><h2>Mamá y Papá</h2></div><span class="pill">Sin renta</span></div>
- <p class="muted">Organizad aquí las tareas domésticas de los adultos para la semana seleccionada.</p>
- <div id="adultTaskForm"></div>
- <div id="adultTasks">Cargando…</div>
-</div>
-<div class="card"><h2>Trabajo de las niñas</h2><div id="adultSessions">Cargando…</div></div>
- <div class="card"><div class="row"><div><small>Trabajos remunerados</small><h2>Extras</h2></div><span class="pill">Fuera de los 90 min</span></div><p class="muted">Crea un trabajo abierto o asígnalo directamente.</p><div class="weekbox"><div class="editrow"><input id="extraTitle" placeholder="Ej. Limpiar el coche"><input id="extraAmount" type="number" min="0.01" step="0.50" placeholder="€"><select id="extraAssignee"></select><button class="primary" onclick="createExtraJob(this)">＋ Crear</button></div></div><div id="adultExtras">Cargando…</div>
- <details style="margin-top:14px">
-  <summary><strong>Historial de extras pagados</strong></summary>
-  <div id="adultExtrasHistory" style="margin-top:10px"></div>
- </details>
-</div><div class="card"><h2>Rentas semanales</h2><div id="adultAllowances">Cargando…</div></div>
+ <nav class="app-tabs" aria-label="Secciones">
+  <button class="app-tab active" data-group="adult" data-tab="adult-week" onclick="showAppTab('adult','adult-week',this)">🏠 <span>Esta semana</span></button>
+  <button class="app-tab" data-group="adult" data-tab="adult-money" onclick="showAppTab('adult','adult-money',this)">💶 <span>Rentas</span></button>
+  <button class="app-tab" data-group="adult" data-tab="adult-extras" onclick="showAppTab('adult','adult-extras',this)">✨ <span>Extras</span></button>
+  <button class="app-tab" data-group="adult" data-tab="adult-setup" onclick="showAppTab('adult','adult-setup',this)">⚙️ <span>Preparar</span></button>
+ </nav>
+ <div id="adult-week" class="tab-panel active">
+  <div class="card"><div class="row"><h2>Seguimiento</h2><span id="adultBadge" class="pill"></span></div><div class="row"><div><div class="muted">Sesiones visibles</div><div id="adultCount" class="metric">0</div></div><div><div class="muted">Pendientes de aprobación</div><div id="pendingCount" class="metric">0</div></div></div></div>
+  <div class="card"><div class="row"><div><small>Trabajo compartido</small><h2>Mamá y Papá</h2></div><span class="pill">Sin renta</span></div><p class="muted">Organizad aquí las tareas domésticas de los adultos para la semana seleccionada.</p><div id="adultTaskForm"></div><div id="adultTasks">Cargando…</div></div>
+  <div class="card"><h2>Trabajo de las niñas</h2><div id="adultSessions">Cargando…</div></div>
+ </div>
+ <div id="adult-money" class="tab-panel">
+  <div class="card"><div><small>Renta semanal</small><h2>Rentas de las niñas</h2></div><p class="muted">Seguimiento de los 90 minutos y del pago semanal.</p><div id="adultAllowances">Cargando…</div></div>
+ </div>
+ <div id="adult-extras" class="tab-panel">
+  <div class="card"><div class="row"><div><small>Trabajos remunerados</small><h2>Extras</h2></div><span class="pill">Fuera de los 90 min</span></div><p class="muted">Crea un trabajo abierto o asígnalo directamente.</p><div class="weekbox"><div class="editrow"><input id="extraTitle" placeholder="Ej. Limpiar el coche"><input id="extraAmount" type="number" min="0.01" step="0.50" placeholder="€"><select id="extraAssignee"></select><button class="primary" onclick="createExtraJob(this)">＋ Crear</button></div></div><div id="adultExtras">Cargando…</div><details style="margin-top:14px"><summary><strong>Historial de extras pagados</strong></summary><div id="adultExtrasHistory" style="margin-top:10px"></div></details></div>
+ </div>
+ <div id="adult-setup" class="tab-panel">
+  <div class="card"><div class="row"><div><small>Gestión semanal</small><h2 id="weekTitle">Semanas de la familia</h2></div><span id="weekStatus" class="pill">—</span></div><p class="muted">Prepara la siguiente semana, personaliza el jueves y publícala cuando esté lista.</p><button id="prepareWeek" class="primary" type="button">＋ Preparar nueva semana</button><div id="weekManager"></div></div>
+ </div>
 </div>
 <div id="child" class="hidden">
- <div class="card"><h2>Mi semana</h2><div class="metric"><span id="approved">0</span> / <span id="target">90</span> min</div>
- <progress id="progress" value="0" max="90"></progress><p>Renta semanal: <strong><span id="allowance">5</span> €</strong></p><div id="allowanceState"></div></div>
- <div class="card"><div class="row"><h2>Mis tareas</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div><div class="card"><div class="row"><div><small>Opcional</small><h2>Trabajos extra</h2></div><span class="pill">€ extra</span></div><p class="muted">No cuentan dentro de tus 90 minutos semanales.</p><div id="childExtras">Cargando…</div>
- <details style="margin-top:14px">
-  <summary><strong>Mi historial de extras pagados</strong></summary>
-  <div id="childExtrasHistory" style="margin-top:10px"></div>
- </details>
-</div>
+ <nav class="app-tabs" aria-label="Secciones">
+  <button class="app-tab active" data-group="child" data-tab="child-week" onclick="showAppTab('child','child-week',this)">🏠 <span>Mi semana</span></button>
+  <button class="app-tab" data-group="child" data-tab="child-extras" onclick="showAppTab('child','child-extras',this)">✨ <span>Extras</span></button>
+  <button class="app-tab" data-group="child" data-tab="child-money" onclick="showAppTab('child','child-money',this)">💶 <span>Mi dinero</span></button>
+ </nav>
+ <div id="child-week" class="tab-panel active">
+  <div class="card"><h2>Mi semana</h2><div class="metric"><span id="approved">0</span> / <span id="target">90</span> min</div><progress id="progress" value="0" max="90"></progress></div>
+  <div class="card"><div class="row"><h2>Mis tareas</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div>
+ </div>
+ <div id="child-extras" class="tab-panel">
+  <div class="card"><div class="row"><div><small>Opcional</small><h2>Trabajos extra</h2></div><span class="pill">€ extra</span></div><p class="muted">No cuentan dentro de tus 90 minutos semanales.</p><div id="childExtras">Cargando…</div><details style="margin-top:14px"><summary><strong>Mi historial de extras pagados</strong></summary><div id="childExtrasHistory" style="margin-top:10px"></div></details></div>
+ </div>
+ <div id="child-money" class="tab-panel">
+  <div class="card"><div><small>Mis 90 minutos</small><h2>Mi dinero</h2></div><p>Renta semanal: <strong><span id="allowance">5</span> €</strong></p><div id="allowanceState"></div></div>
+ </div>
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.13</footer></main>
+<footer>Casa Hermo Louro · v0.14</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -228,6 +247,7 @@ async function payAllowance(id,btn){
  const r=await client.rpc("pay_family_allowance",{p_allowance_id:id});
  if(r.error){btn.disabled=false;btn.textContent="Marcar como pagada";alert("No se pudo marcar como pagada: "+r.error.message);return}
  await loadAdultAllowances();
+   restoreAppTab('adult');
 }
 async function loadChildAllowance(childId){
  const r=await client.from("weekly_allowances").select("id,week_id,amount,status,earned_at,claimed_at,paid_at").eq("child_id",childId).order("id",{ascending:false}).limit(1);
@@ -237,6 +257,19 @@ async function loadChildAllowance(childId){
  const labels={locked:"🔒 Aún no conseguida",earned:"🎉 ¡Renta conseguida!",claimed:"⏳ Solicitada a Mamá/Papá",paid:"✓ Pagada"};
  let action=a.status==="earned"?'<button class="done" onclick="claimAllowance('+a.week_id+',this)">Solicitar renta</button>':"";
  q("#allowanceState").innerHTML='<div class="'+(a.status==="paid"?"ok":"notice")+'"><strong>'+labels[a.status]+'</strong></div>'+action;
+}
+function showAppTab(group,panelId,button){
+ document.querySelectorAll('#'+group+' .tab-panel').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('#'+group+' .app-tab').forEach(x=>x.classList.remove('active'));
+ const panel=document.getElementById(panelId);if(panel)panel.classList.add('active');
+ if(button)button.classList.add('active');
+ try{localStorage.setItem('casa_tab_'+group,panelId)}catch(e){}
+}
+function restoreAppTab(group){
+ let id=null;try{id=localStorage.getItem('casa_tab_'+group)}catch(e){}
+ if(!id)return;
+ const btn=document.querySelector('#'+group+' .app-tab[data-tab="'+id+'"]');
+ if(btn)showAppTab(group,id,btn);
 }
 function euro(n){return Number(n||0).toLocaleString("es-ES",{style:"currency",currency:"EUR"})}
 async function loadAdultExtras(){try{
@@ -286,6 +319,7 @@ async function show(user){
    q("#target").textContent=p.weekly_minutes??90;q("#progress").max=p.weekly_minutes??90;q("#allowance").textContent=p.weekly_allowance??5;
    await loadChildSessions(p);
    await loadChildExtras(p);
+   restoreAppTab('child');
    await loadChildAllowance(p.id);
  }else{
    await loadWeekManager();
