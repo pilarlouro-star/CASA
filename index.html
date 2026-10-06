@@ -41,16 +41,16 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
  <div id="adultTasks">Cargando…</div>
 </div>
 <div class="card"><h2>Trabajo de las niñas</h2><div id="adultSessions">Cargando…</div></div>
- <div class="card"><h2>Rentas semanales</h2><div id="adultAllowances">Cargando…</div></div>
+ <div class="card"><div class="row"><div><small>Trabajos remunerados</small><h2>Extras</h2></div><span class="pill">Fuera de los 90 min</span></div><p class="muted">Crea un trabajo abierto o asígnalo directamente.</p><div class="weekbox"><div class="editrow"><input id="extraTitle" placeholder="Ej. Limpiar el coche"><input id="extraAmount" type="number" min="0.01" step="0.50" placeholder="€"><select id="extraAssignee"></select><button class="primary" onclick="createExtraJob(this)">＋ Crear</button></div></div><div id="adultExtras">Cargando…</div></div><div class="card"><h2>Rentas semanales</h2><div id="adultAllowances">Cargando…</div></div>
 </div>
 <div id="child" class="hidden">
  <div class="card"><h2>Mi semana</h2><div class="metric"><span id="approved">0</span> / <span id="target">90</span> min</div>
  <progress id="progress" value="0" max="90"></progress><p>Renta semanal: <strong><span id="allowance">5</span> €</strong></p><div id="allowanceState"></div></div>
- <div class="card"><div class="row"><h2>Mis tareas</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div>
+ <div class="card"><div class="row"><h2>Mis tareas</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div><div class="card"><div class="row"><div><small>Opcional</small><h2>Trabajos extra</h2></div><span class="pill">€ extra</span></div><p class="muted">No cuentan dentro de tus 90 minutos semanales.</p><div id="childExtras">Cargando…</div></div>
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.11</footer></main>
+<footer>Casa Hermo Louro · v0.12</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -228,6 +228,15 @@ async function loadChildAllowance(childId){
  let action=a.status==="earned"?'<button class="done" onclick="claimAllowance('+a.week_id+',this)">Solicitar renta</button>':"";
  q("#allowanceState").innerHTML='<div class="'+(a.status==="paid"?"ok":"notice")+'"><strong>'+labels[a.status]+'</strong></div>'+action;
 }
+function euro(n){return Number(n||0).toLocaleString("es-ES",{style:"currency",currency:"EUR"})}
+async function loadAdultExtras(){try{const me=(await client.auth.getUser()).data.user,pr=await client.from("profiles").select("family_id").eq("id",me.id).single();if(pr.error)throw pr.error;const kids=await client.from("profiles").select("id,name").eq("family_id",pr.data.family_id).eq("role","child").order("name");if(kids.error)throw kids.error;q("#extraAssignee").innerHTML='<option value="">Disponible para cualquiera</option>'+(kids.data||[]).map(k=>'<option value="'+k.id+'">'+esc(k.name)+'</option>').join("");const names={};(kids.data||[]).forEach(k=>names[k.id]=k.name);const r=await client.from("extra_jobs").select("id,title,amount,assigned_to,status").eq("family_id",pr.data.family_id).neq("status","cancelled").order("id",{ascending:false});if(r.error)throw r.error;const aa=r.data||[],label={available:"Disponible",assigned:"Asignado",completed:"Pendiente de aprobación",approved:"Ganado",paid:"Pagado"};q("#adultExtras").innerHTML=aa.length?aa.map(j=>{let a=j.status==="completed"?'<button class="primary" onclick="approveExtra('+j.id+',this)">✓ Aprobar</button>':j.status==="approved"?'<button class="primary" onclick="payExtra('+j.id+',this)">Marcar como pagado</button>':"";return '<div class="session"><div class="row"><div><strong>'+esc(j.title)+'</strong><div class="muted">'+(j.assigned_to?esc(names[j.assigned_to]||"Niña"):"Cualquiera")+' · '+euro(j.amount)+'</div></div><span class="pill">'+esc(label[j.status]||j.status)+'</span></div>'+a+'</div>'}).join(""):'<p class="muted">Todavía no hay trabajos extra.</p>'}catch(e){q("#adultExtras").innerHTML='<p class="error">'+esc(e.message)+'</p>'}}
+async function createExtraJob(b){let t=q("#extraTitle").value.trim(),a=Number(q("#extraAmount").value),who=q("#extraAssignee").value||null;if(!t||!a||a<=0){alert("Indica un trabajo y un importe válido.");return}b.disabled=true;let r=await client.rpc("create_extra_job",{p_title:t,p_amount:a,p_assigned_to:who});if(r.error)alert(r.error.message);else{q("#extraTitle").value="";q("#extraAmount").value=""}await loadAdultExtras();b.disabled=false}
+async function approveExtra(id,b){b.disabled=true;let r=await client.rpc("approve_extra_job",{p_job_id:id});if(r.error)alert(r.error.message);await loadAdultExtras()}
+async function payExtra(id,b){b.disabled=true;let r=await client.rpc("pay_extra_job",{p_job_id:id});if(r.error)alert(r.error.message);await loadAdultExtras()}
+async function loadChildExtras(p){let r=await client.from("extra_jobs").select("id,title,amount,assigned_to,status").neq("status","cancelled").order("id",{ascending:false});if(r.error){q("#childExtras").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}let aa=r.data||[],label={available:"Disponible",assigned:"Asignado a ti",completed:"Esperando aprobación",approved:"Ganado",paid:"Pagado"};q("#childExtras").innerHTML=aa.length?aa.map(j=>{let a=j.status==="available"?'<button class="primary" onclick="claimExtra('+j.id+',this)">Me lo pido</button>':j.status==="assigned"&&j.assigned_to===p.id?'<button class="done" onclick="completeExtra('+j.id+',this)">✓ Marcar como hecho</button>':"";return '<div class="session"><div class="row"><div><strong>'+esc(j.title)+'</strong><div class="muted">'+euro(j.amount)+'</div></div><span class="pill">'+esc(label[j.status]||j.status)+'</span></div>'+a+'</div>'}).join(""):'<p class="muted">Ahora mismo no hay trabajos extra.</p>'}
+async function claimExtra(id,b){b.disabled=true;let r=await client.rpc("claim_extra_job",{p_job_id:id});if(r.error)alert(r.error.message);let u=await client.auth.getUser();if(u.data.user)await loadChildExtras({id:u.data.user.id})}
+async function completeExtra(id,b){b.disabled=true;let r=await client.rpc("complete_own_extra_job",{p_job_id:id});if(r.error)alert(r.error.message);let u=await client.auth.getUser();if(u.data.user)await loadChildExtras({id:u.data.user.id})}
+
 async function loadAdultAllowances(){
  const r=await client.from("weekly_allowances").select("id,child_id,week_id,amount,status").order("id");
  if(r.error){q("#adultAllowances").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
@@ -250,11 +259,13 @@ async function show(user){
  if(p.role==="child"){
    q("#target").textContent=p.weekly_minutes??90;q("#progress").max=p.weekly_minutes??90;q("#allowance").textContent=p.weekly_allowance??5;
    await loadChildSessions(p);
+   await loadChildExtras(p);
    await loadChildAllowance(p.id);
  }else{
    await loadWeekManager();
    await loadAdultTasks();
    await loadAdultSessions();
+   await loadAdultExtras();
    await loadAdultAllowances();
  }
 }
