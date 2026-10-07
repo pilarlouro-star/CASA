@@ -238,6 +238,14 @@ footer{color:#738383}
 .kid-weeks summary::-webkit-details-marker{display:none}
 .kid-weeks .week-switch{margin-top:6px}
 @media(prefers-reduced-motion:reduce){.kid *,.kid *:after{animation:none!important;transition:none!important}}
+
+/* ===== v0.22 · AVATARES ===== */
+.profile-greeting{display:flex;align-items:center;gap:12px}
+.avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:center;border:2px solid var(--sea);background:var(--soft);box-shadow:0 3px 10px rgba(22,70,83,.12);flex:0 0 auto}
+.avatar-fallback{display:grid;place-items:center;color:var(--atlantic-dark);font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:1.15rem}
+.kid #hello .profile-greeting{gap:10px}
+.kid #hello .avatar{width:48px;height:48px}
+.kid #hello .profile-greeting>div{display:flex;align-items:baseline;gap:.3em}
 </style></head>
 <body><main>
 <header><small>Organización familiar</small><h1>🏠 Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></header>
@@ -248,7 +256,7 @@ footer{color:#738383}
 <button class="primary">Entrar en casa</button><p id="msg"></p></form></section>
 
 <section id="app" class="hidden">
-<div id="hello" class="card"><div class="row"><div><span class="muted">Hola,</span><h2 id="name"></h2></div><span id="role" class="pill"></span></div>
+<div id="hello" class="card"><div class="row"><div class="profile-greeting"><span id="profileAvatar" class="avatar avatar-fallback" aria-hidden="true">?</span><div><span class="muted">Hola,</span><h2 id="name"></h2></div></div><span id="role" class="pill"></span></div>
 <p id="subline" class="muted">Casa Hermo Louro</p><button id="out" class="secondary">Cerrar sesión</button></div>
 
 <div id="adult" class="hidden">
@@ -307,6 +315,19 @@ const client=supabase.createClient("https://yvrqhrpdguhjysprttvk.supabase.co","s
 const q=s=>document.querySelector(s);
 const days={tuesday:"Martes 6",wednesday:"Miércoles 7",thursday:"Jueves 8"};
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+function avatarUrl(path){
+ if(!path)return "";
+ if(/^https?:\/\//i.test(path))return path;
+ return client.storage.from("avatars").getPublicUrl(path).data.publicUrl;
+}
+function renderProfileAvatar(p){
+ const el=q("#profileAvatar"),url=avatarUrl(p.avatar_url);
+ if(url){
+  const img=document.createElement("img");img.id="profileAvatar";img.className="avatar";img.alt="Foto de "+p.name;img.src=url;
+  img.onerror=()=>{img.replaceWith(makeAvatarFallback(p))};el.replaceWith(img);
+ }else el.replaceWith(makeAvatarFallback(p));
+}
+function makeAvatarFallback(p){const x=document.createElement("span");x.id="profileAvatar";x.className="avatar avatar-fallback";x.setAttribute("aria-hidden","true");x.textContent=(p.name||"?").trim().charAt(0).toUpperCase()||"?";return x}
 const status=s=>({pending:"Pendiente",completed:"Hecha · pendiente de aprobación",approved:"Aprobada",rejected:"Revisar"}[s]||s);
 
 function toggleSteps(sessionId,btn){const box=document.getElementById("steps_"+sessionId);if(!box)return;const opening=box.classList.contains("hidden");box.classList.toggle("hidden");if(opening)openSteps.add(sessionId);else openSteps.delete(sessionId);btn.textContent=opening?"Ocultar pasos ▴":"Ver pasos ▾"}
@@ -650,10 +671,10 @@ async function loadAdultAllowances(){
  }).join("");
 }
 async function show(user){
- const r=await client.from("profiles").select("id,family_id,name,role,weekly_allowance,weekly_minutes").eq("id",user.id).single();
+ const r=await client.from("profiles").select("id,family_id,name,role,weekly_allowance,weekly_minutes,avatar_url").eq("id",user.id).single();
  q("#login").classList.add("hidden");q("#app").classList.remove("hidden");
  if(r.error||!r.data){q("#err").classList.remove("hidden");q("#err").innerHTML='<p class="error">'+esc(r.error?.message||"Perfil no encontrado")+'</p>';return}
- const p=r.data;document.body.classList.toggle("kid",p.role==="child");if(p.role==="child"){kidProfile=p;q("#subline").textContent=dayLong(isoToday());}q("#name").textContent=p.name;q("#role").textContent=p.role==="adult"?"Adulto":"Miembro joven";
+ const p=r.data;renderProfileAvatar(p);document.body.classList.toggle("kid",p.role==="child");if(p.role==="child"){kidProfile=p;q("#subline").textContent=dayLong(isoToday());}q("#name").textContent=p.name;q("#role").textContent=p.role==="adult"?"Adulto":"Miembro joven";
  q("#adult").classList.toggle("hidden",p.role!=="adult");q("#child").classList.toggle("hidden",p.role!=="child");
  if(p.role==="child"){
    q("#target").textContent=p.weekly_minutes??90;q("#progress").max=p.weekly_minutes??90;q("#allowance").textContent=p.weekly_allowance??5;
