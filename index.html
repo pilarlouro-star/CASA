@@ -319,7 +319,7 @@ async function loadWeekManager(){
      if(w.status==="draft"){
        steps='<div class="thu-steps-editor"><small>Pasos del jueves</small>'+
          (own.length?own.map(t=>'<div class="step-edit"><span>'+esc(t.description)+'</span><button type="button" class="step-delete" onclick="deleteDraftStep('+t.id+')">✕</button></div>').join(""):'<p class="muted">Todavía no hay pasos. Añade los que necesite esta tarea.</p>')+
-         '<div class="add-step-row"><input id="newstep_'+s.id+'" placeholder="Ej. Limpiar encimera" onkeydown="if(event.key===\\'Enter\\'){event.preventDefault();this.nextElementSibling.click()}"><button type="button" class="secondary" onclick="addDraftStep('+s.id+',this)">＋ Añadir paso</button></div></div>';
+         '<div class="add-step-row"><input id="newstep_'+s.id+'" placeholder="Ej. Limpiar encimera" onkeydown="if(event.key===&quot;Enter&quot;){event.preventDefault();this.nextElementSibling.click()}"><button type="button" class="secondary" onclick="addDraftStep('+s.id+',this)">＋ Añadir paso</button></div></div>';
      }else if(own.length){
        steps='<div class="thu-steps-editor"><small>Checklist publicado</small>'+own.map(t=>'<div class="step-edit"><span>✓ '+esc(t.description)+'</span></div>').join("")+'</div>';
      }
