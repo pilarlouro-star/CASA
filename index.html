@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f4efe7"><title>Casa Hermo Louro</title>
+<meta name="theme-color" content="#164653">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet"><title>Casa Hermo Louro</title>
 <style>
 :root{--bg:#f7f3ed;--card:#fffdf9;--ink:#25312b;--muted:#68736d;--line:#ded8cf;--accent:#587363;--soft:#e7eee9;--warn:#f3e7bc;--ok:#dfece3}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
@@ -148,6 +150,94 @@ footer{color:#738383}
 .thu-steps-editor .add-step-row{display:flex;gap:8px;margin-top:10px}
 .thu-steps-editor .add-step-row input{margin:0}
 .thu-steps-editor .add-step-row button{flex:0 0 auto}
+
+/* ===== v0.21 · VISTA NIÑAS ===== */
+.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.kid{--kid-wait:#d99a2b;--kid-redo:#c8604a;--kid-todo:#e2e9e6;--kid-mint:#9fe0d6}
+.kid h2,.kid h3,.kid .ring-center strong,.kid .ring-msg{font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif}
+.kid header{padding:13px 20px;border-radius:18px;margin-bottom:4px;box-shadow:none}
+.kid header:after,.kid header small,.kid header .muted{display:none}
+.kid header h1{font-size:1.05rem;letter-spacing:0;margin:0;font-weight:700}
+.kid #hello{display:grid;grid-template-columns:1fr auto;align-items:center;background:none;border:0;box-shadow:none;padding:8px 4px 0;margin:6px 0 10px}
+.kid #hello .row{grid-column:1}.kid #hello .row>div{display:flex;align-items:baseline;gap:.3em}
+.kid #hello .row .muted{font-size:1.5rem;color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:600}
+.kid #hello h2{margin:0;font-size:1.5rem}.kid #hello h2:after{content:" 👋"}
+.kid #role{display:none}
+.kid #subline{grid-column:1;margin:2px 0 0;font-size:.95rem}
+.kid #out{grid-column:2;grid-row:1/3;background:none;box-shadow:none;padding:8px 6px;font-size:.85rem;font-weight:600;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+/* anillo */
+.ring-card{display:flex;align-items:center;gap:20px;padding:20px 22px}
+.ring-wrap{position:relative;width:148px;height:148px;flex:0 0 148px}
+.ring-wrap svg{width:100%;height:100%;display:block;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:var(--kid-todo);stroke-width:14}
+.seg{fill:none;stroke-width:14;stroke-linecap:butt}
+.seg-pending{stroke:transparent}.seg-approved{stroke:var(--atlantic)}
+.seg-completed{stroke:var(--kid-wait);opacity:.6}.seg-rejected{stroke:var(--kid-redo);opacity:.45}
+.seg.grow{animation:segGrow 1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes segGrow{from{stroke-dasharray:0 var(--c)}}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring-center strong{font-size:2.7rem;line-height:1;color:var(--atlantic-dark);font-weight:800;font-variant-numeric:tabular-nums}
+.ring-center span{font-size:.82rem;color:var(--muted);margin-top:4px}
+.ring-text{min-width:0}
+.ring-week{margin:0 0 4px;font-size:.9rem;color:var(--muted);font-weight:600}
+.ring-msg{margin:0;font-size:1.3rem;line-height:1.2;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.ring-legend{display:flex;flex-wrap:wrap;gap:4px 12px;margin:10px 0 0;font-size:.82rem;color:var(--muted)}
+.ring-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.ring-card.full{box-shadow:0 0 0 3px rgba(23,106,120,.18),0 10px 26px rgba(23,106,120,.14)}
+.ring-card.full .ring-msg{color:var(--atlantic-dark)}
+@media(max-width:420px){.ring-card{gap:14px;padding:18px 16px}.ring-wrap{width:118px;height:118px;flex-basis:118px}.ring-center strong{font-size:2.2rem}.ring-msg{font-size:1.1rem}}
+/* tarjeta de hoy */
+.today{background:linear-gradient(160deg,var(--atlantic-dark),#1c5a66);color:#fff;border:0;padding:22px;box-shadow:0 14px 30px rgba(22,70,83,.22)}
+.today-kicker{margin:0;font-weight:700;color:#bfe3e2;font-size:.95rem}
+.today h2{color:#fff;font-size:1.75rem;line-height:1.08;margin:.15rem 0 .35rem}
+.today-meta{display:flex;flex-wrap:wrap;gap:4px 14px;margin:0 0 16px;color:#d6ebea;font-size:.92rem}
+.mini-bar{height:6px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}
+.mini-bar span{display:block;height:100%;background:var(--kid-mint);border-radius:inherit;transition:width .45s ease}
+.mini-count{margin:7px 0 2px;font-size:.85rem;color:#cfe6e4}
+.today .checklist{border-top:0;margin:4px 0 0;padding:0}
+.today .check-item{border-bottom-color:rgba(255,255,255,.12);padding:14px 2px;font-size:1.05rem;align-items:center}
+.today .check-item.checked span{color:rgba(255,255,255,.5)}
+.today .muted{color:#cfe6e4}
+.steps-left{margin:14px 0 -6px;font-size:.88rem;color:#cfe6e4}
+.today .done{background:#fff;color:var(--atlantic-dark);box-shadow:none;padding:15px 16px;font-size:1.05rem}
+.today .done.ready{background:var(--kid-mint);color:var(--atlantic-dark)}
+.today .notice{background:rgba(255,255,255,.12);color:#fff;margin-top:16px}
+.today .ok{background:rgba(159,224,214,.22);color:#fff;margin-top:16px}
+.kid .done.ready{animation:readyPulse 2.4s ease-in-out infinite}
+@keyframes readyPulse{0%,100%{box-shadow:0 0 0 0 rgba(159,224,214,.0)}50%{box-shadow:0 0 0 7px rgba(159,224,214,.35)}}
+/* casillas */
+.kid .check-item input{appearance:none;-webkit-appearance:none;width:26px;height:26px;margin:0;border-radius:8px;border:2px solid #b9c9c6;background:#fff;display:grid;place-content:center;cursor:pointer;flex:0 0 auto;transition:background .15s,border-color .15s}
+.kid .check-item input:checked{background:var(--atlantic);border-color:var(--atlantic)}
+.kid .check-item input:checked:after{content:"";width:11px;height:6px;border:solid #fff;border-width:0 0 2.5px 2.5px;transform:translate(0,-1px) rotate(-45deg)}
+.kid .check-item input:disabled{cursor:default;opacity:.7}
+.kid .check-item input:focus-visible{outline:3px solid var(--kid-mint);outline-offset:2px}
+.today .check-item input{background:transparent;border-color:rgba(255,255,255,.6)}
+.today .check-item input:checked{background:var(--kid-mint);border-color:var(--kid-mint)}
+.today .check-item input:checked:after{border-color:var(--atlantic-dark)}
+.kid .check-item.pop input{animation:pop .35s ease}
+@keyframes pop{50%{transform:scale(1.28)}}
+/* resto de la semana */
+.kid-row{position:relative;padding:14px 0 14px 16px;border-top:1px solid var(--line)}
+.kid-row:first-child{border-top:0;padding-top:4px}
+.kid-row:before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:4px;background:var(--kid-todo)}
+.kid-row:first-child:before{top:4px}
+.kid-row.st-approved:before{background:var(--atlantic)}.kid-row.st-completed:before{background:var(--kid-wait)}.kid-row.st-rejected:before{background:var(--kid-redo)}
+.kid-row h3{margin:0 0 2px;font-size:1.05rem}
+.kid-row-title{font-size:.95rem}.kid-row-title .muted{margin-left:6px;font-size:.88rem;white-space:nowrap}
+.kid-row.st-completed .pill{background:#f6e7c8;color:#7a5513}
+.kid-row.st-rejected .pill{background:#f6dcd5;color:#8a3b2a}
+.kid-row.st-approved .pill{background:#dcebe3;color:#315c4c}
+.kid .check-item{font-weight:500}
+.kid #count{display:none}
+.kid-row>.row{flex-wrap:nowrap;align-items:flex-start}.kid-row>.row>div{flex:1;min-width:0}.kid-row .pill{flex:0 0 auto;white-space:nowrap}
+.kid-row .done{background:var(--soft);color:var(--atlantic-dark);box-shadow:none;padding:11px 14px;font-size:.95rem}
+.kid-row .done.ready{background:var(--atlantic);color:#fff}
+.kid h2.rest-title{font-size:1.25rem;margin:0 0 10px}
+.kid-weeks{margin:8px 2px 0}
+.kid-weeks summary{cursor:pointer;color:var(--muted);font-weight:600;padding:8px 2px;list-style:none}
+.kid-weeks summary::-webkit-details-marker{display:none}
+.kid-weeks .week-switch{margin-top:6px}
+@media(prefers-reduced-motion:reduce){.kid *,.kid *:after{animation:none!important;transition:none!important}}
 </style></head>
 <body><main>
 <header><small>Organización familiar</small><h1>🏠 Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></header>
@@ -158,8 +248,8 @@ footer{color:#738383}
 <button class="primary">Entrar en casa</button><p id="msg"></p></form></section>
 
 <section id="app" class="hidden">
-<div class="card"><div class="row"><div><span class="muted">Hola,</span><h2 id="name"></h2></div><span id="role" class="pill"></span></div>
-<p class="muted">Casa Hermo Louro</p><button id="out" class="secondary">Cerrar sesión</button></div>
+<div id="hello" class="card"><div class="row"><div><span class="muted">Hola,</span><h2 id="name"></h2></div><span id="role" class="pill"></span></div>
+<p id="subline" class="muted">Casa Hermo Louro</p><button id="out" class="secondary">Cerrar sesión</button></div>
 
 <div id="adult" class="hidden">
  <nav class="app-tabs" aria-label="Secciones">
@@ -175,8 +265,7 @@ footer{color:#738383}
   <div class="card"><h2>Trabajo de las niñas</h2><div id="girlTabs" class="girl-tabs"></div><div id="adultSessions">Cargando…</div></div>
  </div>
  <div id="adult-money" class="tab-panel">
-   <div class="week-switch-wrap"><div class="muted week-switch-label">Ver semana</div><div id="adultMoneyWeekSwitch" class="week-switch">Cargando semanas…</div></div>
-  <div class="card"><div><small>Renta semanal</small><h2>Rentas de las niñas</h2></div><p id="adultAllowanceWeek" class="muted"></p><p class="muted">Seguimiento de los 90 minutos y del pago semanal.</p><div id="adultAllowances">Cargando…</div></div>
+  <div class="card"><div><small>Renta semanal</small><h2>Rentas de las niñas</h2></div><p class="muted">Seguimiento de los 90 minutos y del pago semanal.</p><div id="adultAllowances">Cargando…</div></div>
  </div>
  <div id="adult-extras" class="tab-panel">
   <div class="card"><div class="row"><div><small>Trabajos remunerados</small><h2>Extras</h2></div><span class="pill">Fuera de los 90 min</span></div><p class="muted">Crea un trabajo abierto o asígnalo directamente.</p><div class="weekbox"><div class="editrow"><input id="extraTitle" placeholder="Ej. Limpiar el coche"><input id="extraAmount" type="number" min="0.01" step="0.50" placeholder="€"><select id="extraAssignee"></select><button class="primary" onclick="createExtraJob(this)">＋ Crear</button></div></div><div id="adultExtras">Cargando…</div><details style="margin-top:14px"><summary><strong>Historial de extras pagados</strong></summary><div id="adultExtrasHistory" style="margin-top:10px"></div></details></div>
@@ -192,15 +281,20 @@ footer{color:#738383}
   <button class="app-tab" data-group="child" data-tab="child-money" onclick="showAppTab('child','child-money',this)">💶 <span>Mi dinero</span></button>
  </nav>
  <div id="child-week" class="tab-panel active">
-   <div class="week-switch-wrap"><div class="muted week-switch-label">Ver semana</div><div id="childWeekSwitch" class="week-switch">Cargando semanas…</div></div>
-  <div class="card"><h2>Mi semana</h2><div class="metric"><span id="approved">0</span> / <span id="target">90</span> min</div><progress id="progress" value="0" max="90"></progress></div>
-  <div class="card"><div class="row"><h2>Mis tareas</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div>
+  <div id="ringCard" class="card ring-card">
+   <div class="ring-wrap"><svg id="ringSvg" viewBox="0 0 148 148" aria-hidden="true"></svg><div class="ring-center"><strong id="approved">0</strong><span>de <span id="target">90</span> min</span></div></div>
+   <div class="ring-text"><p id="ringWeek" class="ring-week"></p><p id="ringMsg" class="ring-msg">Cargando…</p><div id="ringLegend" class="ring-legend"></div></div>
+   <progress id="progress" class="sr-only" value="0" max="90"></progress>
+  </div>
+  <div id="today"></div>
+  <div class="card"><div class="row"><h2 class="rest-title">El resto de la semana</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div>
+  <details class="kid-weeks"><summary>📅 Ver otras semanas</summary><div id="childWeekSwitch" class="week-switch">Cargando semanas…</div></details>
  </div>
  <div id="child-extras" class="tab-panel">
-  <div class="card"><div class="row"><div><small>Opcional</small><h2>Trabajos extra</h2></div><span class="pill">€ extra</span></div><p class="muted">No cuentan dentro de tus 90 minutos semanales.</p><div id="childExtras">Cargando…</div><details style="margin-top:14px"><summary><strong>Mi historial de extras pagados</strong></summary><div id="childExtrasHistory" style="margin-top:10px"></div></details></div>
+  <div class="card"><h2>Trabajos extra</h2><p class="muted">Dinero aparte: no cuentan para tus 90 minutos.</p><div id="childExtras">Cargando…</div><details style="margin-top:14px"><summary><strong>Mi historial de extras pagados</strong></summary><div id="childExtrasHistory" style="margin-top:10px"></div></details></div>
  </div>
  <div id="child-money" class="tab-panel">
-  <div class="card"><div><small>Mis 90 minutos</small><h2>Mi dinero</h2></div><p id="childAllowanceWeek" class="muted"></p><p>Renta semanal: <strong><span id="allowance">5</span> €</strong></p><div id="allowanceState"></div></div>
+  <div class="card"><h2>Mi paga</h2><p id="childAllowanceWeek" class="muted"></p><p>Paga semanal: <strong><span id="allowance">5</span> €</strong></p><div id="allowanceState"></div></div>
  </div>
 </div>
 <div id="err" class="card hidden"></div>
@@ -215,8 +309,8 @@ const days={tuesday:"Martes 6",wednesday:"Miércoles 7",thursday:"Jueves 8"};
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const status=s=>({pending:"Pendiente",completed:"Hecha · pendiente de aprobación",approved:"Aprobada",rejected:"Revisar"}[s]||s);
 
-function toggleSteps(sessionId,btn){const box=document.getElementById("steps_"+sessionId);if(!box)return;const opening=box.classList.contains("hidden");box.classList.toggle("hidden");btn.textContent=opening?"Ocultar pasos ▴":"Ver pasos ▾"}
-async function toggleSessionTask(taskId,checkbox){const wanted=checkbox.checked;checkbox.disabled=true;const r=await client.rpc("toggle_own_session_task",{p_task_id:taskId,p_completed:wanted});if(r.error){checkbox.checked=!wanted;checkbox.disabled=false;alert("No se pudo guardar este paso: "+r.error.message);return}const u=await client.auth.getUser();if(u.data.user)await loadChildSessions({id:u.data.user.id})}
+function toggleSteps(sessionId,btn){const box=document.getElementById("steps_"+sessionId);if(!box)return;const opening=box.classList.contains("hidden");box.classList.toggle("hidden");if(opening)openSteps.add(sessionId);else openSteps.delete(sessionId);btn.textContent=opening?"Ocultar pasos ▴":"Ver pasos ▾"}
+async function toggleSessionTask(taskId,checkbox){const wanted=checkbox.checked;const item=checkbox.closest(".check-item");if(item)item.classList.toggle("checked",wanted);if(wanted){justToggled=taskId;try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}}checkbox.disabled=true;const r=await client.rpc("toggle_own_session_task",{p_task_id:taskId,p_completed:wanted});if(r.error){checkbox.checked=!wanted;if(item)item.classList.toggle("checked",!wanted);justToggled=null;checkbox.disabled=false;alert("No se pudo guardar este paso: "+r.error.message);return}const u=await client.auth.getUser();if(u.data.user)await loadChildSessions({id:u.data.user.id})}
 
 async function markDone(id,btn){
  btn.disabled=true;btn.textContent="Guardando…";
@@ -239,9 +333,40 @@ async function rejectSession(id,btn){
  await loadAdultSessions();
 }
 
-let selectedChildWeekId=null,childWeeksCache=[],currentChildProfile=null;
+let selectedChildWeekId=null,childWeeksCache=[],currentChildProfile=null,kidProfile=null,openSteps=new Set(),justToggled=null,lastRingKey=null;
+const kidStatus={pending:"Por hacer",completed:"Esperando el OK ✋",approved:"✓ Sumada",rejected:"Casi, repásala"};
+const cap=t=>t?t.charAt(0).toUpperCase()+t.slice(1):"";
+const dayShort=d=>cap(new Date(d+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric"}));
+const dayLong=d=>cap(new Date(d+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"}));
+function renderRing(ss,target,allow,wk){
+ const size=148,sw=14,r=(size-sw)/2,c=size/2,C=2*Math.PI*r,gap=ss.length>1?5:0;
+ const sum=ss.reduce((n,s)=>n+(s.minutes||0),0),total=Math.max(target,sum)||1;
+ const approved=ss.filter(s=>s.status==="approved").reduce((n,s)=>n+(s.minutes||0),0);
+ const waiting=ss.filter(s=>s.status==="completed").reduce((n,s)=>n+(s.minutes||0),0);
+ const key=selectedChildWeekId+":"+approved,anim=key!==lastRingKey;lastRingKey=key;
+ let off=0,svg='<circle class="ring-track" r="'+r+'" cx="'+c+'" cy="'+c+'"/>';
+ ss.forEach(s=>{const arc=C*(s.minutes||0)/total,len=Math.max(0,arc-gap);
+  svg+='<circle class="seg seg-'+s.status+(anim&&s.status==="approved"?' grow':'')+'" r="'+r+'" cx="'+c+'" cy="'+c+'" stroke-dasharray="'+len.toFixed(1)+' '+C.toFixed(1)+'" stroke-dashoffset="'+(-(off+gap/2)).toFixed(1)+'" style="--c:'+C.toFixed(1)+'px"/>';off+=arc});
+ q("#ringSvg").innerHTML=svg;
+ const kind=wk?weekKind(wk):"";
+ q("#ringWeek").textContent=!wk?"":kind==="Semana actual"?"Esta semana":kind==="Próxima"?"La semana que viene":"Semana del "+fmtDate(wk.week_start);
+ const full=approved>=target&&target>0;
+ q("#ringCard").classList.toggle("full",full);
+ let msg;
+ if(!ss.length)msg="Aún no tienes tareas esta semana";
+ else if(full)msg="¡Lo tienes! Tus "+allow+" € están ganados 🎉";
+ else if(approved+waiting>=target)msg="Todo hecho. Falta el OK de Mamá o Papá ✋";
+ else msg="Te faltan "+(target-approved)+" min para tus "+allow+" €";
+ q("#ringMsg").textContent=msg;
+ const leg=[];
+ if(approved)leg.push('<span><i style="background:var(--atlantic)"></i>Aprobado</span>');
+ if(waiting)leg.push('<span><i style="background:var(--kid-wait)"></i>Esperando OK</span>');
+ if(ss.some(s=>s.status==="rejected"))leg.push('<span><i style="background:var(--kid-redo)"></i>Para repasar</span>');
+ q("#ringLegend").innerHTML=leg.join("");
+}
 async function loadChildSessions(p){
- currentChildProfile=p;
+ currentChildProfile=Object.assign({},(kidProfile&&kidProfile.id===p.id)?kidProfile:{},p);
+ const target=Number(currentChildProfile.weekly_minutes??90),allow=currentChildProfile.weekly_allowance??5;
  const r=await client.from("work_sessions").select("id,week_id,session_date,session_type,title,minutes,status").eq("assigned_to",p.id).order("session_date",{ascending:true});
  if(r.error){q("#sessions").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
  const all=r.data||[],weekIds=[...new Set(all.map(s=>s.week_id).filter(Boolean))];
@@ -250,29 +375,50 @@ async function loadChildSessions(p){
    const wr=await client.from("weeks").select("id,week_start,status").in("id",weekIds).eq("status","published").order("week_start",{ascending:true});
    if(!wr.error)childWeeksCache=wr.data||[];
  }
- if(!childWeeksCache.length){q("#childWeekSwitch").innerHTML='<span class="muted">No hay semanas publicadas.</span>';q("#count").textContent="0 sesiones";q("#approved").textContent=0;q("#progress").value=0;q("#sessions").innerHTML='<p class="muted">Todavía no tienes sesiones asignadas.</p>';return}
+ if(!childWeeksCache.length){q("#childWeekSwitch").innerHTML='<span class="muted">No hay semanas publicadas.</span>';q("#count").textContent="0 tareas";q("#approved").textContent=0;q("#progress").value=0;renderRing([],target,allow,null);q("#today").innerHTML="";q("#sessions").innerHTML='<p class="muted">Cuando Mamá o Papá publiquen la semana, tus tareas aparecerán aquí.</p>';return}
  const today=isoToday();
  const chosen=childWeeksCache.find(w=>today>=w.week_start&&today<=addDays(w.week_start,6))||childWeeksCache.find(w=>w.week_start>today)||childWeeksCache.at(-1);
  if(selectedChildWeekId&&!childWeeksCache.some(w=>w.id===selectedChildWeekId))selectedChildWeekId=null;
  selectedChildWeekId=selectedChildWeekId||chosen.id;renderChildWeekSwitch();
- const ss=all.filter(s=>s.week_id===selectedChildWeekId);
- q("#count").textContent=ss.length+" sesiones";
+ const ss=all.filter(s=>s.week_id===selectedChildWeekId).sort((x,y)=>x.session_date.localeCompare(y.session_date));
+ q("#count").textContent=ss.length+(ss.length===1?" tarea":" tareas");
  const approved=ss.filter(s=>s.status==="approved").reduce((n,s)=>n+(s.minutes||0),0);
  q("#approved").textContent=approved;q("#progress").value=approved;
- if(!ss.length){q("#sessions").innerHTML='<p class="muted">No tienes sesiones en esta semana.</p>';return}
+ renderRing(ss,target,allow,childWeeksCache.find(w=>w.id===selectedChildWeekId));
+ if(!ss.length){q("#today").innerHTML="";q("#sessions").innerHTML='<p class="muted">No tienes tareas en esta semana.</p>';return}
  const tr=await client.from("session_tasks").select("id,session_id,description,position,is_completed").in("session_id",ss.map(s=>s.id)).order("position");
  if(tr.error){q("#sessions").innerHTML='<p class="error">'+esc(tr.error.message)+'</p>';return}
- const ts=tr.data||[],dayName=s=>new Date(s+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
- const renderSession=s=>{
-   const own=ts.filter(t=>t.session_id===s.id),completedSteps=own.filter(t=>t.is_completed).length,editable=s.status==="pending"||s.status==="rejected";
-   const list=own.length?'<div class="check-summary"><span class="step-count">'+completedSteps+'/'+own.length+' pasos</span><button type="button" class="steps-toggle" onclick="toggleSteps('+s.id+',this)">Ver pasos ▾</button></div><div id="steps_'+s.id+'" class="checklist hidden">'+own.map(t=>'<label class="check-item '+(t.is_completed?'checked':'')+'"><input type="checkbox" '+(t.is_completed?'checked ':'')+(editable?'':'disabled ')+'onchange="toggleSessionTask('+t.id+',this)"><span>'+esc(t.description)+'</span></label>').join("")+'</div>':'<div class="empty">'+(s.session_type==="thursday"?"Tarea variable: "+esc(s.title)+".":"Sin subtareas.")+'</div>';
-   const button=(s.status==="pending"||s.status==="rejected")?'<button class="done" onclick="markDone('+s.id+',this)">✓ Marcar como hecha</button>':s.status==="completed"?'<div class="notice"><strong>Enviada a Mamá/Papá para aprobación.</strong></div>':s.status==="approved"?'<div class="ok"><strong>✓ Aprobada: '+s.minutes+' minutos sumados.</strong></div>':"";
-   return '<div class="session"><div class="row"><div><h3 style="text-transform:capitalize">'+esc(dayName(s.session_date))+' · '+esc(s.title)+'</h3><span class="muted">'+s.minutes+' min</span></div><span class="pill">'+esc(status(s.status))+'</span></div>'+list+button+'</div>';
+ const ts=tr.data||[],stepsOf=s=>ts.filter(t=>t.session_id===s.id),editable=s=>s.status==="pending"||s.status==="rejected";
+ const stepsHtml=(s,own,open)=>'<div id="steps_'+s.id+'" class="checklist'+(open?'':' hidden')+'">'+own.map(t=>'<label class="check-item'+(t.is_completed?' checked':'')+(t.is_completed&&t.id===justToggled?' pop':'')+'"><input type="checkbox" '+(t.is_completed?'checked ':'')+(editable(s)?'':'disabled ')+'onchange="toggleSessionTask('+t.id+',this)"><span>'+esc(t.description)+'</span></label>').join("")+'</div>';
+ const actionHtml=(s,own,big)=>{
+   const left=own.filter(t=>!t.is_completed).length,ready=!own.length||left===0;
+   if(editable(s))return (big&&!ready?'<p class="steps-left">Te '+(left===1?'queda 1 paso':'quedan '+left+' pasos')+'</p>':'')+'<button class="done'+(ready?' ready':'')+'" onclick="markDone('+s.id+',this)">✓ Marcar como hecha</button>';
+   if(s.status==="completed")return '<div class="notice"><strong>Enviada. Esperando el OK de Mamá o Papá ✋</strong></div>';
+   if(s.status==="approved")return '<div class="ok"><strong>✓ +'+s.minutes+' min sumados</strong></div>';
+   return "";
  };
- q("#sessions").innerHTML=ss.sort((x,y)=>x.session_date.localeCompare(y.session_date)).map(renderSession).join("");
+ // Tarjeta destacada: hoy > para repasar > la próxima pendiente
+ let focus=ss.find(s=>s.session_date===today&&s.status!=="approved"),kicker="Hoy te toca";
+ if(!focus){focus=ss.find(s=>s.status==="rejected");kicker="Casi: repásala"}
+ if(!focus){focus=ss.find(s=>s.session_date<today&&s.status==="pending");kicker=focus?"Se te quedó pendiente: "+dayShort(focus.session_date).toLowerCase():""}
+ if(!focus){focus=ss.find(s=>s.session_date>today&&s.status==="pending");kicker=focus?"Lo próximo: "+dayShort(focus.session_date).toLowerCase():""}
+ if(focus){
+   const own=stepsOf(focus),done=own.filter(t=>t.is_completed).length;
+   q("#today").innerHTML='<div class="card today"><p class="today-kicker">'+esc(kicker)+'</p><h2>'+esc(focus.title)+'</h2><p class="today-meta"><span>'+esc(dayLong(focus.session_date))+'</span><span>'+focus.minutes+' min</span></p>'+
+     (own.length?'<div class="mini-bar"><span style="width:'+Math.round(done/own.length*100)+'%"></span></div><p class="mini-count">'+done+' de '+own.length+' pasos</p>'+stepsHtml(focus,own,true)
+       :(focus.session_type==="thursday"?'<p class="muted">Tarea variable: '+esc(focus.title)+'.</p>':''))+actionHtml(focus,own,true)+'</div>';
+ }else q("#today").innerHTML="";
+ const rest=ss.filter(s=>!focus||s.id!==focus.id);
+ q(".rest-title").textContent=focus?"El resto de la semana":"Tu semana";
+ q("#sessions").innerHTML=rest.length?rest.map(s=>{
+   const own=stepsOf(s),done=own.filter(t=>t.is_completed).length,open=openSteps.has(s.id);
+   const steps=own.length?'<div class="check-summary"><span class="step-count">'+done+'/'+own.length+' pasos</span><button type="button" class="steps-toggle" onclick="toggleSteps('+s.id+',this)">'+(open?'Ocultar pasos ▴':'Ver pasos ▾')+'</button></div>'+stepsHtml(s,own,open):'';
+   return '<div class="kid-row st-'+s.status+'"><div class="row"><div><h3>'+esc(dayShort(s.session_date))+'</h3><div class="kid-row-title">'+esc(s.title)+'<span class="muted">'+s.minutes+' min</span></div></div><span class="pill">'+esc(kidStatus[s.status]||s.status)+'</span></div>'+steps+(editable(s)?actionHtml(s,own,false):'')+'</div>';
+ }).join(""):'<p class="muted">No tienes más tareas esta semana.</p>';
+ justToggled=null;
 }
 function renderChildWeekSwitch(){q("#childWeekSwitch").innerHTML=childWeeksCache.map(w=>'<button class="week-choice '+(w.id===selectedChildWeekId?'active':'')+'" onclick="selectChildWeek('+w.id+')"><small>'+weekKind(w)+'</small>'+fmtDate(w.week_start)+' – '+fmtDate(addDays(w.week_start,6))+'</button>').join("")}
-async function selectChildWeek(id){selectedChildWeekId=id;if(currentChildProfile){await loadChildSessions(currentChildProfile);await loadChildAllowance(currentChildProfile.id)}}
+async function selectChildWeek(id){selectedChildWeekId=id;lastRingKey=null;if(currentChildProfile){await loadChildSessions(currentChildProfile);await loadChildAllowance(currentChildProfile.id)}}
 
 function fmtDate(s){return new Date(s+"T12:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"short"})}
 function addDays(s,n){let d=new Date(s+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
@@ -335,12 +481,8 @@ let selectedAdultWeekId=null,adultWeeksCache=[];
 function isoToday(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function weekKind(w){const t=isoToday(),e=addDays(w.week_start,6);if(t>=w.week_start&&t<=e)return "Semana actual";if(w.week_start>t)return "Próxima";return "Anterior"}
 async function loadAdultWeekSwitch(){const me=(await client.auth.getUser()).data.user,pr=await client.from("profiles").select("family_id").eq("id",me.id).single();if(pr.error)throw pr.error;const wr=await client.from("weeks").select("id,week_start,status").eq("family_id",pr.data.family_id).eq("status","published").order("week_start",{ascending:true});if(wr.error)throw wr.error;adultWeeksCache=wr.data||[];if(!adultWeeksCache.length){q("#adultWeekSwitch").innerHTML='<span class="muted">No hay semanas publicadas.</span>';return}const t=isoToday();let chosen=adultWeeksCache.find(w=>t>=w.week_start&&t<=addDays(w.week_start,6))||adultWeeksCache.find(w=>w.week_start>t)||adultWeeksCache.at(-1);if(selectedAdultWeekId&&!adultWeeksCache.some(w=>w.id===selectedAdultWeekId))selectedAdultWeekId=null;selectedAdultWeekId=selectedAdultWeekId||chosen.id;renderAdultWeekSwitch()}
-function renderAdultWeekSwitch(){
- const html=adultWeeksCache.map(w=>'<button class="week-choice '+(w.id===selectedAdultWeekId?'active':'')+'" onclick="selectAdultWeek('+w.id+')"><small>'+weekKind(w)+'</small>'+fmtDate(w.week_start)+' – '+fmtDate(addDays(w.week_start,6))+'</button>').join("");
- q("#adultWeekSwitch").innerHTML=html;
- const money=q("#adultMoneyWeekSwitch");if(money)money.innerHTML=html;
-}
-async function selectAdultWeek(id){selectedAdultWeekId=id;selectedGirlId=null;renderAdultWeekSwitch();await loadAdultTasks();await loadAdultSessions();await loadAdultAllowances()}
+function renderAdultWeekSwitch(){q("#adultWeekSwitch").innerHTML=adultWeeksCache.map(w=>'<button class="week-choice '+(w.id===selectedAdultWeekId?'active':'')+'" onclick="selectAdultWeek('+w.id+')"><small>'+weekKind(w)+'</small>'+fmtDate(w.week_start)+' – '+fmtDate(addDays(w.week_start,6))+'</button>').join("")}
+async function selectAdultWeek(id){selectedAdultWeekId=id;selectedGirlId=null;renderAdultWeekSwitch();await loadAdultTasks();await loadAdultSessions()}
 async function getAdultContext(){
  const me=(await client.auth.getUser()).data.user;
  const pr=await client.from("profiles").select("id,name,family_id,role").eq("id",me.id).single();
@@ -431,7 +573,7 @@ async function loadAdultSessions(){
 async function claimAllowance(weekId,btn){
  btn.disabled=true;btn.textContent="Solicitando…";
  const r=await client.rpc("claim_own_allowance",{p_week_id:weekId});
- if(r.error){btn.disabled=false;btn.textContent="Solicitar renta";alert("No se pudo solicitar: "+r.error.message);return}
+ if(r.error){btn.disabled=false;btn.textContent="Pedir mi paga 💸";alert("No se pudo solicitar: "+r.error.message);return}
  const u=await client.auth.getUser();if(u.data.user)await loadChildAllowance(u.data.user.id);
 }
 async function payAllowance(id,btn){
@@ -450,10 +592,10 @@ async function loadChildAllowance(childId){
  const a=(r.data||[])[0];
  const w=childWeeksCache.find(x=>x.id===selectedChildWeekId);
  q("#childAllowanceWeek").textContent=w?"Semana "+fmtDate(w.week_start)+" – "+fmtDate(addDays(w.week_start,6)):"";
- if(!a){q("#allowanceState").innerHTML='<p class="muted">Sin renta registrada para esta semana.</p>';return}
+ if(!a){q("#allowanceState").innerHTML='<p class="muted">Aún no hay paga para esta semana.</p>';return}
  q("#allowance").textContent=a.amount;
- const labels={locked:"🔒 Aún no conseguida",earned:"🎉 ¡Renta conseguida!",claimed:"⏳ Solicitada a Mamá/Papá",paid:"✓ Pagada"};
- let action=a.status==="earned"?'<button class="done" onclick="claimAllowance('+a.week_id+',this)">Solicitar renta</button>':"";
+ const labels={locked:"🔒 Aún te faltan minutos",earned:"🎉 ¡Paga conseguida!",claimed:"⏳ Pedida. Mamá o Papá te la darán pronto",paid:"✓ Cobrada"};
+ let action=a.status==="earned"?'<button class="done" onclick="claimAllowance('+a.week_id+',this)">Pedir mi paga 💸</button>':"";
  q("#allowanceState").innerHTML='<div class="'+(a.status==="paid"?"ok":"notice")+'"><strong>'+labels[a.status]+'</strong></div>'+action;
 }
 function showAppTab(group,panelId,button){
@@ -487,7 +629,7 @@ async function payExtra(id,b){b.disabled=true;let r=await client.rpc("pay_extra_
 async function loadChildExtras(p){
  let r=await client.from("extra_jobs").select("id,title,amount,assigned_to,status,paid_at").neq("status","cancelled").order("id",{ascending:false});
  if(r.error){q("#childExtras").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
- let all=r.data||[],active=all.filter(j=>j.status!=="paid"),paid=all.filter(j=>j.status==="paid"),label={available:"Disponible",assigned:"Asignado a ti",completed:"Esperando aprobación",approved:"Ganado"};
+ let all=r.data||[],active=all.filter(j=>j.status!=="paid"),paid=all.filter(j=>j.status==="paid"),label={available:"Disponible",assigned:"Para ti",completed:"Esperando el OK ✋",approved:"¡Ganado! Falta cobrarlo"};
  q("#childExtras").innerHTML=active.length?active.map(j=>{let a=j.status==="available"?'<button class="primary" onclick="claimExtra('+j.id+',this)">Me lo pido</button>':j.status==="assigned"&&j.assigned_to===p.id?'<button class="done" onclick="completeExtra('+j.id+',this)">✓ Marcar como hecho</button>':"";return '<div class="session"><div class="row"><div><strong>'+esc(j.title)+'</strong><div class="muted">'+euro(j.amount)+'</div></div><span class="pill">'+esc(label[j.status]||j.status)+'</span></div>'+a+'</div>'}).join(""):'<p class="muted">Ahora mismo no hay trabajos extra pendientes.</p>';
  q("#childExtrasHistory").innerHTML=paid.length?paid.map(j=>'<div class="session"><div class="row"><div><strong>'+esc(j.title)+'</strong><div class="muted">'+euro(j.amount)+(j.paid_at?' · '+new Date(j.paid_at).toLocaleDateString("es-ES"):"")+'</div></div><span class="pill">Pagado</span></div></div>').join(""):'<p class="muted">Todavía no tienes extras pagados.</p>';
 }
@@ -495,18 +637,14 @@ async function claimExtra(id,b){b.disabled=true;let r=await client.rpc("claim_ex
 async function completeExtra(id,b){b.disabled=true;let r=await client.rpc("complete_own_extra_job",{p_job_id:id});if(r.error)alert(r.error.message);let u=await client.auth.getUser();if(u.data.user)await loadChildExtras({id:u.data.user.id})}
 
 async function loadAdultAllowances(){
- let query=client.from("weekly_allowances").select("id,child_id,week_id,amount,status").order("child_id");
- if(selectedAdultWeekId)query=query.eq("week_id",selectedAdultWeekId);
- const r=await query;
+ const r=await client.from("weekly_allowances").select("id,child_id,week_id,amount,status").order("id");
  if(r.error){q("#adultAllowances").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
- const w=adultWeeksCache.find(x=>x.id===selectedAdultWeekId);
- q("#adultAllowanceWeek").textContent=w?"Semana "+fmtDate(w.week_start)+" – "+fmtDate(addDays(w.week_start,6)):"";
- const aa=r.data||[];if(!aa.length){q("#adultAllowances").innerHTML='<p class="muted">No hay rentas registradas para esta semana.</p>';return}
+ const aa=r.data||[]; if(!aa.length){q("#adultAllowances").innerHTML='<p class="muted">No hay rentas registradas.</p>';return}
  const ids=[...new Set(aa.map(a=>a.child_id))];
- const pr=await client.from("profiles").select("id,name").in("id",ids);const names={};
+ const pr=await client.from("profiles").select("id,name").in("id",ids); const names={};
  if(!pr.error)(pr.data||[]).forEach(p=>names[p.id]=p.name);
  const labels={locked:"Bloqueada",earned:"Conseguida",claimed:"Solicitada",paid:"Pagada"};
- q("#adultAllowances").innerHTML=aa.sort((a,b)=>(names[a.child_id]||"").localeCompare(names[b.child_id]||"","es")).map(a=>{
+ q("#adultAllowances").innerHTML=aa.map(a=>{
    const action=a.status==="claimed"?'<button class="approve" onclick="payAllowance('+a.id+',this)">€ Marcar como pagada</button>':"";
    return '<div class="session"><div class="row"><div><h3>'+esc(names[a.child_id]||"Miembro de la familia")+'</h3><span class="muted">'+a.amount+' €</span></div><span class="pill">'+labels[a.status]+'</span></div>'+action+'</div>';
  }).join("");
@@ -515,7 +653,7 @@ async function show(user){
  const r=await client.from("profiles").select("id,family_id,name,role,weekly_allowance,weekly_minutes").eq("id",user.id).single();
  q("#login").classList.add("hidden");q("#app").classList.remove("hidden");
  if(r.error||!r.data){q("#err").classList.remove("hidden");q("#err").innerHTML='<p class="error">'+esc(r.error?.message||"Perfil no encontrado")+'</p>';return}
- const p=r.data;q("#name").textContent=p.name;q("#role").textContent=p.role==="adult"?"Adulto":"Miembro joven";
+ const p=r.data;document.body.classList.toggle("kid",p.role==="child");if(p.role==="child"){kidProfile=p;q("#subline").textContent=dayLong(isoToday());}q("#name").textContent=p.name;q("#role").textContent=p.role==="adult"?"Adulto":"Miembro joven";
  q("#adult").classList.toggle("hidden",p.role!=="adult");q("#child").classList.toggle("hidden",p.role!=="child");
  if(p.role==="child"){
    q("#target").textContent=p.weekly_minutes??90;q("#progress").max=p.weekly_minutes??90;q("#allowance").textContent=p.weekly_allowance??5;
