@@ -26,6 +26,7 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 .tab-panel.active{display:block}
 @media(max-width:620px){.app-tab{padding:10px 12px}.app-tab span{font-size:.9rem}}
 .week-switch-wrap{margin:2px 0 14px}.week-switch-label{font-size:.86rem;font-weight:700;margin:0 0 7px 3px}.week-switch{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 5px;scrollbar-width:none}.week-switch::-webkit-scrollbar{display:none}.week-choice{min-width:max-content;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:10px 13px;font-size:.92rem;font-weight:750}.week-choice.active{background:var(--accent);color:white;border-color:var(--accent)}.week-choice small{display:block;color:inherit;opacity:.78;letter-spacing:.04em;text-transform:uppercase;font-size:.68rem;margin-bottom:2px}
+.girl-tabs{display:flex;gap:7px;margin:12px 0 6px;padding-bottom:4px;overflow-x:auto;scrollbar-width:none}.girl-tabs::-webkit-scrollbar{display:none}.girl-tab{flex:1;min-width:max-content;background:var(--soft);color:var(--ink);border:1px solid transparent;border-radius:999px;padding:9px 14px;font-size:.92rem;font-weight:750}.girl-tab.active{background:var(--accent);color:white}
 </style></head>
 <body><main>
 <header><small>Organización familiar</small><h1>🏠 Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></header>
@@ -50,7 +51,7 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
   <div class="week-switch-wrap"><div class="muted week-switch-label">Ver semana</div><div id="adultWeekSwitch" class="week-switch">Cargando semanas…</div></div>
   <div class="card"><div class="row"><h2>Seguimiento</h2><span id="adultBadge" class="pill"></span></div><div class="row"><div><div class="muted">Sesiones visibles</div><div id="adultCount" class="metric">0</div></div><div><div class="muted">Pendientes de aprobación</div><div id="pendingCount" class="metric">0</div></div></div></div>
   <div class="card"><div class="row"><div><small>Trabajo compartido</small><h2>Mamá y Papá</h2></div><span class="pill">Sin renta</span></div><p class="muted">Organizad aquí las tareas domésticas de los adultos para la semana seleccionada.</p><div id="adultTaskForm"></div><div id="adultTasks">Cargando…</div></div>
-  <div class="card"><h2>Trabajo de las niñas</h2><div id="adultSessions">Cargando…</div></div>
+  <div class="card"><h2>Trabajo de las niñas</h2><div id="girlTabs" class="girl-tabs"></div><div id="adultSessions">Cargando…</div></div>
  </div>
  <div id="adult-money" class="tab-panel">
   <div class="card"><div><small>Renta semanal</small><h2>Rentas de las niñas</h2></div><p class="muted">Seguimiento de los 90 minutos y del pago semanal.</p><div id="adultAllowances">Cargando…</div></div>
@@ -81,7 +82,7 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.15.1</footer></main>
+<footer>Casa Hermo Louro · v0.15.2</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -166,7 +167,7 @@ function isoToday(){const d=new Date();return d.getFullYear()+"-"+String(d.getMo
 function weekKind(w){const t=isoToday(),e=addDays(w.week_start,6);if(t>=w.week_start&&t<=e)return "Semana actual";if(w.week_start>t)return "Próxima";return "Anterior"}
 async function loadAdultWeekSwitch(){const me=(await client.auth.getUser()).data.user,pr=await client.from("profiles").select("family_id").eq("id",me.id).single();if(pr.error)throw pr.error;const wr=await client.from("weeks").select("id,week_start,status").eq("family_id",pr.data.family_id).eq("status","published").order("week_start",{ascending:true});if(wr.error)throw wr.error;adultWeeksCache=wr.data||[];if(!adultWeeksCache.length){q("#adultWeekSwitch").innerHTML='<span class="muted">No hay semanas publicadas.</span>';return}const t=isoToday();let chosen=adultWeeksCache.find(w=>t>=w.week_start&&t<=addDays(w.week_start,6))||adultWeeksCache.find(w=>w.week_start>t)||adultWeeksCache.at(-1);if(selectedAdultWeekId&&!adultWeeksCache.some(w=>w.id===selectedAdultWeekId))selectedAdultWeekId=null;selectedAdultWeekId=selectedAdultWeekId||chosen.id;renderAdultWeekSwitch()}
 function renderAdultWeekSwitch(){q("#adultWeekSwitch").innerHTML=adultWeeksCache.map(w=>'<button class="week-choice '+(w.id===selectedAdultWeekId?'active':'')+'" onclick="selectAdultWeek('+w.id+')"><small>'+weekKind(w)+'</small>'+fmtDate(w.week_start)+' – '+fmtDate(addDays(w.week_start,6))+'</button>').join("")}
-async function selectAdultWeek(id){selectedAdultWeekId=id;renderAdultWeekSwitch();await loadAdultTasks();await loadAdultSessions()}
+async function selectAdultWeek(id){selectedAdultWeekId=id;selectedGirlId=null;renderAdultWeekSwitch();await loadAdultTasks();await loadAdultSessions()}
 async function getAdultContext(){
  const me=(await client.auth.getUser()).data.user;
  const pr=await client.from("profiles").select("id,name,family_id,role").eq("id",me.id).single();
@@ -219,29 +220,37 @@ async function deleteAdultTask(id){
  if(r.error)alert(r.error.message);await loadAdultTasks();
 }
 
+let selectedGirlId=null;
+async function selectGirl(id){
+ selectedGirlId=id;
+ await loadAdultSessions();
+}
+
 async function loadAdultSessions(){
  let query=client.from("work_sessions").select("id,week_id,assigned_to,session_date,session_type,title,minutes,status").order("assigned_to").order("session_date");
  if(selectedAdultWeekId)query=query.eq("week_id",selectedAdultWeekId);
  const r=await query;
  if(r.error){q("#adultSessions").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
- const ss=r.data||[];
- q("#adultCount").textContent=ss.length;
- const pending=ss.filter(s=>s.status==="completed").length;
+ const all=r.data||[];
+ const ids=[...new Set(all.map(s=>s.assigned_to))];
+ const pr=ids.length?await client.from("profiles").select("id,name").in("id",ids):{data:[],error:null};
+ const names={};if(!pr.error)(pr.data||[]).forEach(p=>names[p.id]=p.name);
+ const girls=ids.map(id=>({id,name:names[id]||"Niña"})).sort((a,b)=>a.name.localeCompare(b.name,"es"));
+ if(girls.length&&!girls.some(g=>g.id===selectedGirlId))selectedGirlId=girls[0].id;
+ q("#girlTabs").innerHTML=girls.map(g=>'<button class="girl-tab '+(g.id===selectedGirlId?'active':'')+'" onclick="selectGirl(\''+g.id+'\')">'+esc(g.name)+'</button>').join("");
+ const ss=selectedGirlId?all.filter(s=>s.assigned_to===selectedGirlId):all;
+ q("#adultCount").textContent=all.length;
+ const pending=all.filter(s=>s.status==="completed").length;
  q("#pendingCount").textContent=pending;
  q("#adultBadge").textContent=pending?pending+" por aprobar":"Todo revisado";
- if(!ss.length){q("#adultSessions").innerHTML='<p class="muted">No hay sesiones familiares.</p>';return}
-
- const ids=[...new Set(ss.map(s=>s.assigned_to))];
- const pr=await client.from("profiles").select("id,name").in("id",ids);
- const names={};
- if(!pr.error)(pr.data||[]).forEach(p=>names[p.id]=p.name);
-
+ if(!ss.length){q("#adultSessions").innerHTML='<p class="muted">No hay sesiones para esta niña en la semana seleccionada.</p>';return}
  q("#adultSessions").innerHTML=ss.map(s=>{
    const who=names[s.assigned_to]||"Miembro de la familia";
    const action=s.status==="completed"
      ?'<button class="approve" onclick="approveSession('+s.id+',this)">✓ Aprobar '+s.minutes+' min</button>'
      :s.status==="approved"?'<div class="ok"><strong>✓ Aprobada</strong></div>':"";
-   return '<div class="session"><div class="row"><div><h3>'+esc(who)+' · '+esc(new Date(s.session_date+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"short"}))+'</h3><div>'+esc(s.title)+' · '+s.minutes+' min</div></div><span class="pill">'+esc(status(s.status))+'</span></div>'+action+'</div>';
+   const date=new Date(s.session_date+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"short"});
+   return '<div class="session"><div class="row"><div><h3>'+esc(who)+' · '+esc(date)+'</h3><div>'+esc(s.title)+' · '+s.minutes+' min</div></div><span class="pill">'+esc(status(s.status))+'</span></div>'+action+'</div>';
  }).join("");
 }
 
