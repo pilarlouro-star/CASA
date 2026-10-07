@@ -81,7 +81,7 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.15</footer></main>
+<footer>Casa Hermo Louro · v0.15.1</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -333,6 +333,7 @@ async function show(user){
    await loadChildAllowance(p.id);
  }else{
    await loadWeekManager();
+   await loadAdultWeekSwitch();
    await loadAdultTasks();
    await loadAdultSessions();
    await loadAdultExtras();
