@@ -199,12 +199,12 @@ footer{color:#738383}
   <div class="card"><div class="row"><div><small>Opcional</small><h2>Trabajos extra</h2></div><span class="pill">€ extra</span></div><p class="muted">No cuentan dentro de tus 90 minutos semanales.</p><div id="childExtras">Cargando…</div><details style="margin-top:14px"><summary><strong>Mi historial de extras pagados</strong></summary><div id="childExtrasHistory" style="margin-top:10px"></div></details></div>
  </div>
  <div id="child-money" class="tab-panel">
-  <div class="card"><div><small>Mis 90 minutos</small><h2>Mi dinero</h2></div><p>Renta semanal: <strong><span id="allowance">5</span> €</strong></p><div id="allowanceState"></div></div>
+  <div class="card"><div><small>Mis 90 minutos</small><h2>Mi dinero</h2></div><p id="childAllowanceWeek" class="muted"></p><p>Renta semanal: <strong><span id="allowance">5</span> €</strong></p><div id="allowanceState"></div></div>
  </div>
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.19 · Atlantic</footer></main>
+<footer>Casa Hermo Louro · v0.20 · Atlantic</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -271,7 +271,7 @@ async function loadChildSessions(p){
  q("#sessions").innerHTML=ss.sort((x,y)=>x.session_date.localeCompare(y.session_date)).map(renderSession).join("");
 }
 function renderChildWeekSwitch(){q("#childWeekSwitch").innerHTML=childWeeksCache.map(w=>'<button class="week-choice '+(w.id===selectedChildWeekId?'active':'')+'" onclick="selectChildWeek('+w.id+')"><small>'+weekKind(w)+'</small>'+fmtDate(w.week_start)+' – '+fmtDate(addDays(w.week_start,6))+'</button>').join("")}
-async function selectChildWeek(id){selectedChildWeekId=id;if(currentChildProfile)await loadChildSessions(currentChildProfile)}
+async function selectChildWeek(id){selectedChildWeekId=id;if(currentChildProfile){await loadChildSessions(currentChildProfile);await loadChildAllowance(currentChildProfile.id)}}
 
 function fmtDate(s){return new Date(s+"T12:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"short"})}
 function addDays(s,n){let d=new Date(s+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
@@ -437,9 +437,15 @@ async function payAllowance(id,btn){
    restoreAppTab('adult');
 }
 async function loadChildAllowance(childId){
- const r=await client.from("weekly_allowances").select("id,week_id,amount,status,earned_at,claimed_at,paid_at").eq("child_id",childId).order("id",{ascending:false}).limit(1);
+ let query=client.from("weekly_allowances").select("id,week_id,amount,status,earned_at,claimed_at,paid_at").eq("child_id",childId);
+ if(selectedChildWeekId)query=query.eq("week_id",selectedChildWeekId);
+ else query=query.order("id",{ascending:false}).limit(1);
+ const r=await query;
  if(r.error){q("#allowanceState").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
- const a=(r.data||[])[0]; if(!a){q("#allowanceState").innerHTML='<p class="muted">Sin renta semanal registrada.</p>';return}
+ const a=(r.data||[])[0];
+ const w=childWeeksCache.find(x=>x.id===selectedChildWeekId);
+ q("#childAllowanceWeek").textContent=w?"Semana "+fmtDate(w.week_start)+" – "+fmtDate(addDays(w.week_start,6)):"";
+ if(!a){q("#allowanceState").innerHTML='<p class="muted">Sin renta registrada para esta semana.</p>';return}
  q("#allowance").textContent=a.amount;
  const labels={locked:"🔒 Aún no conseguida",earned:"🎉 ¡Renta conseguida!",claimed:"⏳ Solicitada a Mamá/Papá",paid:"✓ Pagada"};
  let action=a.status==="earned"?'<button class="done" onclick="claimAllowance('+a.week_id+',this)">Solicitar renta</button>':"";
