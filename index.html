@@ -138,6 +138,7 @@ footer{color:#738383}
  .app-tabs{position:sticky;top:6px;z-index:10;backdrop-filter:blur(10px)}
 }
 
+.check-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}.step-count{font-size:.88rem;font-weight:800;color:var(--atlantic)}.steps-toggle{background:#edf3f0;color:var(--atlantic-dark);padding:8px 11px;border-radius:10px;font-size:.88rem}.checklist{margin:10px 0 4px;padding:6px 0 0;border-top:1px solid #e4e9e5}.check-item{display:flex;gap:10px;align-items:flex-start;padding:9px 3px;border-bottom:1px solid #edf0ec;cursor:pointer}.check-item:last-child{border-bottom:0}.check-item input{width:19px;height:19px;margin:1px 0 0;accent-color:var(--atlantic);flex:0 0 auto}.check-item span{line-height:1.35}.check-item.checked span{text-decoration:line-through;color:var(--muted)}
 </style></head>
 <body><main>
 <header><small>Organización familiar</small><h1>🏠 Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></header>
@@ -193,7 +194,7 @@ footer{color:#738383}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.16 · Atlantic</footer></main>
+<footer>Casa Hermo Louro · v0.17 · Atlantic</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -202,6 +203,9 @@ const q=s=>document.querySelector(s);
 const days={tuesday:"Martes 6",wednesday:"Miércoles 7",thursday:"Jueves 8"};
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const status=s=>({pending:"Pendiente",completed:"Hecha · pendiente de aprobación",approved:"Aprobada",rejected:"Revisar"}[s]||s);
+
+function toggleSteps(sessionId,btn){const box=document.getElementById("steps_"+sessionId);if(!box)return;const opening=box.classList.contains("hidden");box.classList.toggle("hidden");btn.textContent=opening?"Ocultar pasos ▴":"Ver pasos ▾"}
+async function toggleSessionTask(taskId,checkbox){const wanted=checkbox.checked;checkbox.disabled=true;const r=await client.rpc("toggle_own_session_task",{p_task_id:taskId,p_completed:wanted});if(r.error){checkbox.checked=!wanted;checkbox.disabled=false;alert("No se pudo guardar este paso: "+r.error.message);return}const u=await client.auth.getUser();if(u.data.user)await loadChildSessions({id:u.data.user.id})}
 
 async function markDone(id,btn){
  btn.disabled=true;btn.textContent="Guardando…";
@@ -239,7 +243,7 @@ async function loadChildSessions(p){
  const approved=currentSessions.filter(s=>s.status==="approved").reduce((n,s)=>n+(s.minutes||0),0);
  q("#approved").textContent=approved;q("#progress").value=approved;
  if(!ss.length){q("#sessions").innerHTML='<p class="muted">Todavía no tienes sesiones asignadas.</p>';return}
- const tr=await client.from("session_tasks").select("session_id,description,position").in("session_id",ss.map(s=>s.id)).order("position");
+ const tr=await client.from("session_tasks").select("id,session_id,description,position,is_completed").in("session_id",ss.map(s=>s.id)).order("position");
  if(tr.error){q("#sessions").innerHTML='<p class="error">'+esc(tr.error.message)+'</p>';return}
  const ts=tr.data||[];
  const groups={};
@@ -248,8 +252,9 @@ async function loadChildSessions(p){
  const dayName=s=>new Date(s+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
  const renderSession=s=>{
    const own=ts.filter(t=>t.session_id===s.id);
-   const list=own.length?'<ul class="tasks">'+own.map(t=>'<li>'+esc(t.description)+'</li>').join("")+'</ul>':
-     '<div class="empty">'+(s.session_type==="thursday"?"Tarea variable: "+esc(s.title)+".":"Sin subtareas.")+'</div>';
+   const completedSteps=own.filter(t=>t.is_completed).length;
+   const editable=s.status==="pending"||s.status==="rejected";
+   const list=own.length?'<div class="check-summary"><span class="step-count">'+completedSteps+'/'+own.length+' pasos</span><button type="button" class="steps-toggle" onclick="toggleSteps('+s.id+',this)">Ver pasos ▾</button></div><div id="steps_'+s.id+'" class="checklist hidden">'+own.map(t=>'<label class="check-item '+(t.is_completed?'checked':'')+'"><input type="checkbox" '+(t.is_completed?'checked ':'')+(editable?'':'disabled ')+'onchange="toggleSessionTask('+t.id+',this)"><span>'+esc(t.description)+'</span></label>').join("")+'</div>':'<div class="empty">'+(s.session_type==="thursday"?"Tarea variable: "+esc(s.title)+".":"Sin subtareas.")+'</div>';
    const button=(s.status==="pending"||s.status==="rejected")?'<button class="done" onclick="markDone('+s.id+',this)">✓ Marcar como hecha</button>':
      s.status==="completed"?'<div class="notice"><strong>Enviada a Mamá/Papá para aprobación.</strong></div>':
      s.status==="approved"?'<div class="ok"><strong>✓ Aprobada: '+s.minutes+' minutos sumados.</strong></div>':"";
