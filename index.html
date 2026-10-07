@@ -139,6 +139,15 @@ footer{color:#738383}
 }
 
 .check-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}.step-count{font-size:.88rem;font-weight:800;color:var(--atlantic)}.steps-toggle{background:#edf3f0;color:var(--atlantic-dark);padding:8px 11px;border-radius:10px;font-size:.88rem}.checklist{margin:10px 0 4px;padding:6px 0 0;border-top:1px solid #e4e9e5}.check-item{display:flex;gap:10px;align-items:flex-start;padding:9px 3px;border-bottom:1px solid #edf0ec;cursor:pointer}.check-item:last-child{border-bottom:0}.check-item input{width:19px;height:19px;margin:1px 0 0;accent-color:var(--atlantic);flex:0 0 auto}.check-item span{line-height:1.35}.check-item.checked span{text-decoration:line-through;color:var(--muted)}
+
+.thu-steps-editor{margin-top:12px;padding:12px;background:#f4f7f4;border:1px solid #e0e7e2;border-radius:14px}
+.thu-steps-editor .step-edit{display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #e5ebe6}
+.thu-steps-editor .step-edit:last-of-type{border-bottom:0}
+.thu-steps-editor .step-edit span{flex:1;line-height:1.3}
+.thu-steps-editor .step-delete{padding:6px 9px;background:transparent;color:#8b5555;border:1px solid #dfcccc}
+.thu-steps-editor .add-step-row{display:flex;gap:8px;margin-top:10px}
+.thu-steps-editor .add-step-row input{margin:0}
+.thu-steps-editor .add-step-row button{flex:0 0 auto}
 </style></head>
 <body><main>
 <header><small>Organización familiar</small><h1>🏠 Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></header>
@@ -195,7 +204,7 @@ footer{color:#738383}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.18 · Atlantic</footer></main>
+<footer>Casa Hermo Louro · v0.19 · Atlantic</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -270,8 +279,56 @@ function nextMonday(){let d=new Date();d.setHours(12,0,0,0);let x=(8-d.getDay())
 async function prepareNewWeek(){let b=q("#prepareWeek");b.disabled=true;b.textContent="Preparando…";try{let wr=await client.from("weeks").select("week_start").order("week_start",{ascending:false}).limit(1);if(wr.error)throw wr.error;let start=(wr.data&&wr.data.length)?addDays(wr.data[0].week_start,7):nextMonday();let c=await client.rpc("create_family_week",{p_week_start:start});if(c.error)throw c.error;let g=await client.rpc("generate_week_sessions",{p_week_id:c.data});if(g.error)throw g.error;await loadWeekManager();await loadAdultWeekSwitch();await loadAdultTasks();await loadAdultSessions()}catch(e){alert("No se pudo preparar: "+e.message)}finally{b.disabled=false;b.textContent="＋ Preparar nueva semana"}}
 async function saveDraftTitle(id,b){let i=document.getElementById("title_"+id),r=await client.rpc("update_draft_session",{p_session_id:id,p_title:i.value.trim()});if(r.error)alert(r.error.message);else{b.textContent="✓ Guardado";setTimeout(()=>b.textContent="Guardar",900)}}
 async function publishWeek(id){if(!confirm("¿Publicar esta semana?"))return;let r=await client.rpc("publish_family_week",{p_week_id:id});if(r.error)alert(r.error.message);else{await loadWeekManager();await loadAdultWeekSwitch();await loadAdultTasks();await loadAdultSessions()}}
-async function loadWeekManager(){let wr=await client.from("weeks").select("id,week_start,status").order("week_start",{ascending:false}).limit(6);if(wr.error){q("#weekManager").innerHTML='<p class="error">'+esc(wr.error.message)+'</p>';return}let ww=wr.data||[];if(!ww.length){q("#weekManager").innerHTML='<p class="muted">Todavía no hay semanas.</p>';return}let w=ww.find(x=>x.status==="draft")||ww[0];q("#weekTitle").textContent="Semana "+fmtDate(w.week_start)+" – "+fmtDate(addDays(w.week_start,6));q("#weekStatus").textContent=w.status==="draft"?"Borrador":w.status==="published"?"Publicada":"Cerrada";let sr=await client.from("work_sessions").select("id,assigned_to,session_date,session_type,title,minutes").eq("week_id",w.id).order("assigned_to").order("session_date");if(sr.error){q("#weekManager").innerHTML='<p class="error">'+esc(sr.error.message)+'</p>';return}let ss=sr.data||[],ids=[...new Set(ss.map(x=>x.assigned_to))],names={};if(ids.length){let pr=await client.from("profiles").select("id,name").in("id",ids);if(!pr.error)(pr.data||[]).forEach(x=>names[x.id]=x.name)}let body=ss.map(s=>{let edit=w.status==="draft"&&s.session_type==="thursday"?'<div class="editrow"><input id="title_'+s.id+'" value="'+esc(s.title)+'"><button class="secondary" onclick="saveDraftTitle('+s.id+',this)">Guardar</button></div>':"";return '<div class="session"><strong>'+esc(names[s.assigned_to]||"Miembro")+' · '+fmtDate(s.session_date)+'</strong><div>'+esc(s.title)+' · '+s.minutes+' min</div>'+edit+'</div>'}).join("");if(w.status==="draft")body+='<button class="publish" onclick="publishWeek('+w.id+')">Publicar semana</button>';q("#weekManager").innerHTML='<div class="weekbox">'+body+'</div>'}
 
+async function addDraftStep(sessionId,btn){
+ const input=document.getElementById("newstep_"+sessionId),description=input.value.trim();
+ if(!description)return;
+ btn.disabled=true;
+ const r=await client.rpc("add_draft_session_task",{p_session_id:sessionId,p_description:description});
+ if(r.error){alert("No se pudo añadir el paso: "+r.error.message);btn.disabled=false;return}
+ await loadWeekManager();
+}
+async function deleteDraftStep(taskId){
+ if(!confirm("¿Eliminar este paso?"))return;
+ const r=await client.rpc("delete_draft_session_task",{p_task_id:taskId});
+ if(r.error){alert("No se pudo eliminar: "+r.error.message);return}
+ await loadWeekManager();
+}
+async function loadWeekManager(){
+ let wr=await client.from("weeks").select("id,week_start,status").order("week_start",{ascending:false}).limit(6);
+ if(wr.error){q("#weekManager").innerHTML='<p class="error">'+esc(wr.error.message)+'</p>';return}
+ let ww=wr.data||[];
+ if(!ww.length){q("#weekManager").innerHTML='<p class="muted">Todavía no hay semanas.</p>';return}
+ let w=ww.find(x=>x.status==="draft")||ww[0];
+ q("#weekTitle").textContent="Semana "+fmtDate(w.week_start)+" – "+fmtDate(addDays(w.week_start,6));
+ q("#weekStatus").textContent=w.status==="draft"?"Borrador":w.status==="published"?"Publicada":"Cerrada";
+ let sr=await client.from("work_sessions").select("id,assigned_to,session_date,session_type,title,minutes").eq("week_id",w.id).order("assigned_to").order("session_date");
+ if(sr.error){q("#weekManager").innerHTML='<p class="error">'+esc(sr.error.message)+'</p>';return}
+ let ss=sr.data||[],ids=[...new Set(ss.map(x=>x.assigned_to))],names={};
+ if(ids.length){let pr=await client.from("profiles").select("id,name").in("id",ids);if(!pr.error)(pr.data||[]).forEach(x=>names[x.id]=x.name)}
+ let taskMap={};
+ if(ss.length){
+   let tr=await client.from("session_tasks").select("id,session_id,description,position").in("session_id",ss.map(s=>s.id)).order("position");
+   if(!tr.error)(tr.data||[]).forEach(t=>(taskMap[t.session_id]??=[]).push(t));
+ }
+ let body=ss.map(s=>{
+   let edit=w.status==="draft"&&s.session_type==="thursday"?'<div class="editrow"><input id="title_'+s.id+'" value="'+esc(s.title)+'"><button class="secondary" onclick="saveDraftTitle('+s.id+',this)">Guardar</button></div>':"";
+   let steps="";
+   if(s.session_type==="thursday"){
+     const own=taskMap[s.id]||[];
+     if(w.status==="draft"){
+       steps='<div class="thu-steps-editor"><small>Pasos del jueves</small>'+
+         (own.length?own.map(t=>'<div class="step-edit"><span>'+esc(t.description)+'</span><button type="button" class="step-delete" onclick="deleteDraftStep('+t.id+')">✕</button></div>').join(""):'<p class="muted">Todavía no hay pasos. Añade los que necesite esta tarea.</p>')+
+         '<div class="add-step-row"><input id="newstep_'+s.id+'" placeholder="Ej. Limpiar encimera" onkeydown="if(event.key===\\'Enter\\'){event.preventDefault();this.nextElementSibling.click()}"><button type="button" class="secondary" onclick="addDraftStep('+s.id+',this)">＋ Añadir paso</button></div></div>';
+     }else if(own.length){
+       steps='<div class="thu-steps-editor"><small>Checklist publicado</small>'+own.map(t=>'<div class="step-edit"><span>✓ '+esc(t.description)+'</span></div>').join("")+'</div>';
+     }
+   }
+   return '<div class="session"><strong>'+esc(names[s.assigned_to]||"Miembro")+' · '+fmtDate(s.session_date)+'</strong><div>'+esc(s.title)+' · '+s.minutes+' min</div>'+edit+steps+'</div>';
+ }).join("");
+ if(w.status==="draft")body+='<button class="publish" onclick="publishWeek('+w.id+')">Publicar semana</button>';
+ q("#weekManager").innerHTML='<div class="weekbox">'+body+'</div>';
+}
 
 let selectedAdultWeekId=null,adultWeeksCache=[];
 function isoToday(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
