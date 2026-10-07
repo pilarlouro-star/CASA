@@ -175,7 +175,8 @@ footer{color:#738383}
   <div class="card"><h2>Trabajo de las niñas</h2><div id="girlTabs" class="girl-tabs"></div><div id="adultSessions">Cargando…</div></div>
  </div>
  <div id="adult-money" class="tab-panel">
-  <div class="card"><div><small>Renta semanal</small><h2>Rentas de las niñas</h2></div><p class="muted">Seguimiento de los 90 minutos y del pago semanal.</p><div id="adultAllowances">Cargando…</div></div>
+   <div class="week-switch-wrap"><div class="muted week-switch-label">Ver semana</div><div id="adultMoneyWeekSwitch" class="week-switch">Cargando semanas…</div></div>
+  <div class="card"><div><small>Renta semanal</small><h2>Rentas de las niñas</h2></div><p id="adultAllowanceWeek" class="muted"></p><p class="muted">Seguimiento de los 90 minutos y del pago semanal.</p><div id="adultAllowances">Cargando…</div></div>
  </div>
  <div id="adult-extras" class="tab-panel">
   <div class="card"><div class="row"><div><small>Trabajos remunerados</small><h2>Extras</h2></div><span class="pill">Fuera de los 90 min</span></div><p class="muted">Crea un trabajo abierto o asígnalo directamente.</p><div class="weekbox"><div class="editrow"><input id="extraTitle" placeholder="Ej. Limpiar el coche"><input id="extraAmount" type="number" min="0.01" step="0.50" placeholder="€"><select id="extraAssignee"></select><button class="primary" onclick="createExtraJob(this)">＋ Crear</button></div></div><div id="adultExtras">Cargando…</div><details style="margin-top:14px"><summary><strong>Historial de extras pagados</strong></summary><div id="adultExtrasHistory" style="margin-top:10px"></div></details></div>
@@ -204,7 +205,7 @@ footer{color:#738383}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.20 · Atlantic</footer></main>
+<footer>Casa Hermo Louro · v0.21 · Atlantic</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -334,8 +335,12 @@ let selectedAdultWeekId=null,adultWeeksCache=[];
 function isoToday(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function weekKind(w){const t=isoToday(),e=addDays(w.week_start,6);if(t>=w.week_start&&t<=e)return "Semana actual";if(w.week_start>t)return "Próxima";return "Anterior"}
 async function loadAdultWeekSwitch(){const me=(await client.auth.getUser()).data.user,pr=await client.from("profiles").select("family_id").eq("id",me.id).single();if(pr.error)throw pr.error;const wr=await client.from("weeks").select("id,week_start,status").eq("family_id",pr.data.family_id).eq("status","published").order("week_start",{ascending:true});if(wr.error)throw wr.error;adultWeeksCache=wr.data||[];if(!adultWeeksCache.length){q("#adultWeekSwitch").innerHTML='<span class="muted">No hay semanas publicadas.</span>';return}const t=isoToday();let chosen=adultWeeksCache.find(w=>t>=w.week_start&&t<=addDays(w.week_start,6))||adultWeeksCache.find(w=>w.week_start>t)||adultWeeksCache.at(-1);if(selectedAdultWeekId&&!adultWeeksCache.some(w=>w.id===selectedAdultWeekId))selectedAdultWeekId=null;selectedAdultWeekId=selectedAdultWeekId||chosen.id;renderAdultWeekSwitch()}
-function renderAdultWeekSwitch(){q("#adultWeekSwitch").innerHTML=adultWeeksCache.map(w=>'<button class="week-choice '+(w.id===selectedAdultWeekId?'active':'')+'" onclick="selectAdultWeek('+w.id+')"><small>'+weekKind(w)+'</small>'+fmtDate(w.week_start)+' – '+fmtDate(addDays(w.week_start,6))+'</button>').join("")}
-async function selectAdultWeek(id){selectedAdultWeekId=id;selectedGirlId=null;renderAdultWeekSwitch();await loadAdultTasks();await loadAdultSessions()}
+function renderAdultWeekSwitch(){
+ const html=adultWeeksCache.map(w=>'<button class="week-choice '+(w.id===selectedAdultWeekId?'active':'')+'" onclick="selectAdultWeek('+w.id+')"><small>'+weekKind(w)+'</small>'+fmtDate(w.week_start)+' – '+fmtDate(addDays(w.week_start,6))+'</button>').join("");
+ q("#adultWeekSwitch").innerHTML=html;
+ const money=q("#adultMoneyWeekSwitch");if(money)money.innerHTML=html;
+}
+async function selectAdultWeek(id){selectedAdultWeekId=id;selectedGirlId=null;renderAdultWeekSwitch();await loadAdultTasks();await loadAdultSessions();await loadAdultAllowances()}
 async function getAdultContext(){
  const me=(await client.auth.getUser()).data.user;
  const pr=await client.from("profiles").select("id,name,family_id,role").eq("id",me.id).single();
@@ -490,14 +495,18 @@ async function claimExtra(id,b){b.disabled=true;let r=await client.rpc("claim_ex
 async function completeExtra(id,b){b.disabled=true;let r=await client.rpc("complete_own_extra_job",{p_job_id:id});if(r.error)alert(r.error.message);let u=await client.auth.getUser();if(u.data.user)await loadChildExtras({id:u.data.user.id})}
 
 async function loadAdultAllowances(){
- const r=await client.from("weekly_allowances").select("id,child_id,week_id,amount,status").order("id");
+ let query=client.from("weekly_allowances").select("id,child_id,week_id,amount,status").order("child_id");
+ if(selectedAdultWeekId)query=query.eq("week_id",selectedAdultWeekId);
+ const r=await query;
  if(r.error){q("#adultAllowances").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
- const aa=r.data||[]; if(!aa.length){q("#adultAllowances").innerHTML='<p class="muted">No hay rentas registradas.</p>';return}
+ const w=adultWeeksCache.find(x=>x.id===selectedAdultWeekId);
+ q("#adultAllowanceWeek").textContent=w?"Semana "+fmtDate(w.week_start)+" – "+fmtDate(addDays(w.week_start,6)):"";
+ const aa=r.data||[];if(!aa.length){q("#adultAllowances").innerHTML='<p class="muted">No hay rentas registradas para esta semana.</p>';return}
  const ids=[...new Set(aa.map(a=>a.child_id))];
- const pr=await client.from("profiles").select("id,name").in("id",ids); const names={};
+ const pr=await client.from("profiles").select("id,name").in("id",ids);const names={};
  if(!pr.error)(pr.data||[]).forEach(p=>names[p.id]=p.name);
  const labels={locked:"Bloqueada",earned:"Conseguida",claimed:"Solicitada",paid:"Pagada"};
- q("#adultAllowances").innerHTML=aa.map(a=>{
+ q("#adultAllowances").innerHTML=aa.sort((a,b)=>(names[a.child_id]||"").localeCompare(names[b.child_id]||"","es")).map(a=>{
    const action=a.status==="claimed"?'<button class="approve" onclick="payAllowance('+a.id+',this)">€ Marcar como pagada</button>':"";
    return '<div class="session"><div class="row"><div><h3>'+esc(names[a.child_id]||"Miembro de la familia")+'</h3><span class="muted">'+a.amount+' €</span></div><span class="pill">'+labels[a.status]+'</span></div>'+action+'</div>';
  }).join("");
