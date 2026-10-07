@@ -27,6 +27,117 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 @media(max-width:620px){.app-tab{padding:10px 12px}.app-tab span{font-size:.9rem}}
 .week-switch-wrap{margin:2px 0 14px}.week-switch-label{font-size:.86rem;font-weight:700;margin:0 0 7px 3px}.week-switch{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 5px;scrollbar-width:none}.week-switch::-webkit-scrollbar{display:none}.week-choice{min-width:max-content;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:10px 13px;font-size:.92rem;font-weight:750}.week-choice.active{background:var(--accent);color:white;border-color:var(--accent)}.week-choice small{display:block;color:inherit;opacity:.78;letter-spacing:.04em;text-transform:uppercase;font-size:.68rem;margin-bottom:2px}
 .girl-tabs{display:flex;gap:7px;margin:12px 0 6px;padding-bottom:4px;overflow-x:auto;scrollbar-width:none}.girl-tabs::-webkit-scrollbar{display:none}.girl-tab{flex:1;min-width:max-content;background:var(--soft);color:var(--ink);border:1px solid transparent;border-radius:999px;padding:9px 14px;font-size:.92rem;font-weight:750}.girl-tab.active{background:var(--accent);color:white}
+
+/* ===== CASA HERMO LOURO · ATLANTIC ===== */
+:root{
+ --bg:#f3f0e8;
+ --card:#fffdfa;
+ --ink:#17333b;
+ --muted:#687b7d;
+ --line:#d9dfda;
+ --accent:#176a78;
+ --soft:#e3efed;
+ --warn:#f1e4c9;
+ --ok:#dcebe3;
+ --atlantic:#176a78;
+ --atlantic-dark:#164653;
+ --sea:#8dbfc0;
+ --sage:#9bad91;
+ --sand:#e8dcc5;
+ --foam:#f8f7f2;
+}
+body{
+ background:
+   radial-gradient(circle at 90% -10%,rgba(141,191,192,.22),transparent 32rem),
+   linear-gradient(180deg,#f7f5ef 0,#f3f0e8 100%);
+ color:var(--ink);
+}
+main{max-width:720px;padding:26px 18px 70px}
+header{
+ position:relative;overflow:hidden;
+ margin:0 0 18px;padding:26px 24px 25px;
+ border-radius:28px;
+ background:linear-gradient(135deg,var(--atlantic-dark),var(--atlantic) 62%,#438c92);
+ color:#fff;
+ box-shadow:0 12px 28px rgba(22,70,83,.16);
+}
+header:after{
+ content:"";position:absolute;right:-38px;bottom:-58px;width:190px;height:120px;
+ border-radius:50%;border:20px solid rgba(255,255,255,.08);
+ transform:rotate(-8deg);
+}
+header small{color:#d9eeee;font-weight:800}
+header h1{font-size:2.08rem;letter-spacing:-.035em;margin:.28rem 0 .2rem}
+header .muted{color:#e7f1ef}
+.card{
+ background:rgba(255,253,250,.96);
+ border:1px solid rgba(23,106,120,.12);
+ border-radius:24px;padding:20px;margin:14px 0;
+ box-shadow:0 7px 22px rgba(34,68,72,.055);
+}
+.card h2{letter-spacing:-.025em;margin-top:.15rem}
+small{color:var(--atlantic);font-weight:800}
+button{transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
+button:active{transform:scale(.985)}
+.primary,.done,.approve,.publish{
+ background:var(--atlantic);color:#fff;
+ box-shadow:0 5px 13px rgba(23,106,120,.13)
+}
+.secondary{background:#edf3f0;color:var(--atlantic-dark)}
+.pill{background:#e5efec;color:#315c60;font-weight:700}
+.approved,.ok{background:#dcebe3;color:#315c4c}
+.notice{background:#f4e9d2;color:#665837}
+progress{accent-color:var(--atlantic)}
+.app-tabs{
+ background:rgba(255,253,250,.72);padding:6px;border:1px solid rgba(23,106,120,.10);
+ border-radius:18px;margin-bottom:16px;box-shadow:0 5px 16px rgba(34,68,72,.04)
+}
+.app-tab{
+ border:0;background:transparent;color:#61777a;border-radius:13px;
+ box-shadow:none;padding:10px 13px
+}
+.app-tab.active{
+ background:var(--atlantic-dark);color:#fff;border:0;
+ box-shadow:0 5px 12px rgba(22,70,83,.15)
+}
+.week-switch-wrap{padding:2px 2px 0}
+.week-switch-label{color:#657b7d;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem}
+.week-choice{
+ background:#fffdfa;border:1px solid #d9e2dd;color:#365b60;
+ box-shadow:0 3px 10px rgba(34,68,72,.04)
+}
+.week-choice.active{
+ background:linear-gradient(135deg,var(--atlantic),#398a90);
+ border-color:transparent;color:#fff;box-shadow:0 6px 14px rgba(23,106,120,.16)
+}
+.girl-tabs{
+ background:#edf2ee;border-radius:16px;padding:5px;margin:14px 0 8px;gap:4px
+}
+.girl-tab{
+ background:transparent;color:#617274;border:0;border-radius:12px;padding:9px 15px
+}
+.girl-tab.active{
+ background:#fffdfa;color:var(--atlantic-dark);
+ box-shadow:0 3px 10px rgba(34,68,72,.10)
+}
+.session{border-color:#e4e7e1}
+.session h3{color:var(--atlantic-dark)}
+.weekbox{border-color:#dbe2dc;background:#faf9f4}
+input,select{
+ background:#fff;border:1px solid #d5ded9;color:var(--ink);
+ border-radius:12px;padding:13px;font-size:16px
+}
+input:focus,select:focus{outline:2px solid rgba(23,106,120,.22);border-color:var(--atlantic)}
+.metric{color:var(--atlantic-dark);letter-spacing:-.04em}
+footer{color:#738383}
+@media(max-width:620px){
+ main{padding:16px 13px 55px}
+ header{border-radius:22px;padding:22px 19px}
+ header h1{font-size:1.85rem}
+ .card{border-radius:20px;padding:17px}
+ .app-tabs{position:sticky;top:6px;z-index:10;backdrop-filter:blur(10px)}
+}
+
 </style></head>
 <body><main>
 <header><small>Organización familiar</small><h1>🏠 Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></header>
@@ -82,7 +193,7 @@ footer{margin-top:30px;color:var(--muted);font-size:.85rem;text-align:center}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.15.2</footer></main>
+<footer>Casa Hermo Louro · v0.16 · Atlantic</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
