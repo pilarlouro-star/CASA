@@ -182,6 +182,7 @@ footer{color:#738383}
   <button class="app-tab" data-group="child" data-tab="child-money" onclick="showAppTab('child','child-money',this)">💶 <span>Mi dinero</span></button>
  </nav>
  <div id="child-week" class="tab-panel active">
+   <div class="week-switch-wrap"><div class="muted week-switch-label">Ver semana</div><div id="childWeekSwitch" class="week-switch">Cargando semanas…</div></div>
   <div class="card"><h2>Mi semana</h2><div class="metric"><span id="approved">0</span> / <span id="target">90</span> min</div><progress id="progress" value="0" max="90"></progress></div>
   <div class="card"><div class="row"><h2>Mis tareas</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div>
  </div>
@@ -194,7 +195,7 @@ footer{color:#738383}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.17 · Atlantic</footer></main>
+<footer>Casa Hermo Louro · v0.18 · Atlantic</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -228,47 +229,41 @@ async function rejectSession(id,btn){
  await loadAdultSessions();
 }
 
+let selectedChildWeekId=null,childWeeksCache=[],currentChildProfile=null;
 async function loadChildSessions(p){
- const r=await client.from("work_sessions").select("id,week_id,session_date,session_type,title,minutes,status").eq("assigned_to",p.id).order("session_date",{ascending:false});
+ currentChildProfile=p;
+ const r=await client.from("work_sessions").select("id,week_id,session_date,session_type,title,minutes,status").eq("assigned_to",p.id).order("session_date",{ascending:true});
  if(r.error){q("#sessions").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
- const ss=r.data||[];q("#count").textContent=ss.length+" sesiones";
- const weekIds=[...new Set(ss.map(s=>s.week_id).filter(Boolean))];
- let weeks={};
+ const all=r.data||[],weekIds=[...new Set(all.map(s=>s.week_id).filter(Boolean))];
+ childWeeksCache=[];
  if(weekIds.length){
-   const wr=await client.from("weeks").select("id,week_start,status").in("id",weekIds);
-   if(!wr.error)(wr.data||[]).forEach(w=>weeks[w.id]=w);
+   const wr=await client.from("weeks").select("id,week_start,status").in("id",weekIds).eq("status","published").order("week_start",{ascending:true});
+   if(!wr.error)childWeeksCache=wr.data||[];
  }
- const latestStart=Object.values(weeks).map(w=>w.week_start).sort().reverse()[0]||null;
- const currentSessions=latestStart?ss.filter(s=>weeks[s.week_id]?.week_start===latestStart):ss;
- const approved=currentSessions.filter(s=>s.status==="approved").reduce((n,s)=>n+(s.minutes||0),0);
+ if(!childWeeksCache.length){q("#childWeekSwitch").innerHTML='<span class="muted">No hay semanas publicadas.</span>';q("#count").textContent="0 sesiones";q("#approved").textContent=0;q("#progress").value=0;q("#sessions").innerHTML='<p class="muted">Todavía no tienes sesiones asignadas.</p>';return}
+ const today=isoToday();
+ const chosen=childWeeksCache.find(w=>today>=w.week_start&&today<=addDays(w.week_start,6))||childWeeksCache.find(w=>w.week_start>today)||childWeeksCache.at(-1);
+ if(selectedChildWeekId&&!childWeeksCache.some(w=>w.id===selectedChildWeekId))selectedChildWeekId=null;
+ selectedChildWeekId=selectedChildWeekId||chosen.id;renderChildWeekSwitch();
+ const ss=all.filter(s=>s.week_id===selectedChildWeekId);
+ q("#count").textContent=ss.length+" sesiones";
+ const approved=ss.filter(s=>s.status==="approved").reduce((n,s)=>n+(s.minutes||0),0);
  q("#approved").textContent=approved;q("#progress").value=approved;
- if(!ss.length){q("#sessions").innerHTML='<p class="muted">Todavía no tienes sesiones asignadas.</p>';return}
+ if(!ss.length){q("#sessions").innerHTML='<p class="muted">No tienes sesiones en esta semana.</p>';return}
  const tr=await client.from("session_tasks").select("id,session_id,description,position,is_completed").in("session_id",ss.map(s=>s.id)).order("position");
  if(tr.error){q("#sessions").innerHTML='<p class="error">'+esc(tr.error.message)+'</p>';return}
- const ts=tr.data||[];
- const groups={};
- ss.forEach(s=>{const key=weeks[s.week_id]?.week_start||s.session_date; (groups[key]??=[]).push(s)});
- const starts=Object.keys(groups).sort().reverse();
- const dayName=s=>new Date(s+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+ const ts=tr.data||[],dayName=s=>new Date(s+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
  const renderSession=s=>{
-   const own=ts.filter(t=>t.session_id===s.id);
-   const completedSteps=own.filter(t=>t.is_completed).length;
-   const editable=s.status==="pending"||s.status==="rejected";
+   const own=ts.filter(t=>t.session_id===s.id),completedSteps=own.filter(t=>t.is_completed).length,editable=s.status==="pending"||s.status==="rejected";
    const list=own.length?'<div class="check-summary"><span class="step-count">'+completedSteps+'/'+own.length+' pasos</span><button type="button" class="steps-toggle" onclick="toggleSteps('+s.id+',this)">Ver pasos ▾</button></div><div id="steps_'+s.id+'" class="checklist hidden">'+own.map(t=>'<label class="check-item '+(t.is_completed?'checked':'')+'"><input type="checkbox" '+(t.is_completed?'checked ':'')+(editable?'':'disabled ')+'onchange="toggleSessionTask('+t.id+',this)"><span>'+esc(t.description)+'</span></label>').join("")+'</div>':'<div class="empty">'+(s.session_type==="thursday"?"Tarea variable: "+esc(s.title)+".":"Sin subtareas.")+'</div>';
-   const button=(s.status==="pending"||s.status==="rejected")?'<button class="done" onclick="markDone('+s.id+',this)">✓ Marcar como hecha</button>':
-     s.status==="completed"?'<div class="notice"><strong>Enviada a Mamá/Papá para aprobación.</strong></div>':
-     s.status==="approved"?'<div class="ok"><strong>✓ Aprobada: '+s.minutes+' minutos sumados.</strong></div>':"";
-   const date=dayName(s.session_date);
-   return '<div class="session"><div class="row"><div><h3 style="text-transform:capitalize">'+esc(date)+' · '+esc(s.title)+'</h3><span class="muted">'+s.minutes+' min</span></div><span class="pill">'+esc(status(s.status))+'</span></div>'+list+button+'</div>';
+   const button=(s.status==="pending"||s.status==="rejected")?'<button class="done" onclick="markDone('+s.id+',this)">✓ Marcar como hecha</button>':s.status==="completed"?'<div class="notice"><strong>Enviada a Mamá/Papá para aprobación.</strong></div>':s.status==="approved"?'<div class="ok"><strong>✓ Aprobada: '+s.minutes+' minutos sumados.</strong></div>':"";
+   return '<div class="session"><div class="row"><div><h3 style="text-transform:capitalize">'+esc(dayName(s.session_date))+' · '+esc(s.title)+'</h3><span class="muted">'+s.minutes+' min</span></div><span class="pill">'+esc(status(s.status))+'</span></div>'+list+button+'</div>';
  };
- q("#sessions").innerHTML=starts.map((start,idx)=>{
-   const w=weeks[groups[start][0].week_id];
-   const end=w?addDays(w.week_start,6):start;
-   const label='Semana '+fmtDate(start)+' – '+fmtDate(end);
-   const tag=idx===0?'<span class="pill approved">Actual</span>':'<span class="pill">Historial</span>';
-   return '<section class="weekbox"><div class="row"><h3>'+esc(label)+'</h3>'+tag+'</div>'+groups[start].sort((x,y)=>x.session_date.localeCompare(y.session_date)).map(renderSession).join("")+'</section>';
- }).join("");
+ q("#sessions").innerHTML=ss.sort((x,y)=>x.session_date.localeCompare(y.session_date)).map(renderSession).join("");
 }
+function renderChildWeekSwitch(){q("#childWeekSwitch").innerHTML=childWeeksCache.map(w=>'<button class="week-choice '+(w.id===selectedChildWeekId?'active':'')+'" onclick="selectChildWeek('+w.id+')"><small>'+weekKind(w)+'</small>'+fmtDate(w.week_start)+' – '+fmtDate(addDays(w.week_start,6))+'</button>').join("")}
+async function selectChildWeek(id){selectedChildWeekId=id;if(currentChildProfile)await loadChildSessions(currentChildProfile)}
+
 function fmtDate(s){return new Date(s+"T12:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"short"})}
 function addDays(s,n){let d=new Date(s+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
 function nextMonday(){let d=new Date();d.setHours(12,0,0,0);let x=(8-d.getDay())%7||7;d.setDate(d.getDate()+x);return d.toISOString().slice(0,10)}
