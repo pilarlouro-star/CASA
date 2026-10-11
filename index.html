@@ -246,6 +246,42 @@ footer{color:#738383}
 .kid #hello .profile-greeting{gap:10px}
 .kid #hello .avatar{width:48px;height:48px}
 .kid #hello .profile-greeting>div{display:flex;align-items:baseline;gap:.3em}
+
+/* ===== v0.23 · ATLANTIC · PANEL ADULTOS ===== */
+body:not(.kid){background:linear-gradient(180deg,#f5f8f6 0%,#f3f0e8 56%,#f8f6f1 100%)}
+body:not(.kid) main{max-width:1060px;padding:22px 22px 80px}
+body:not(.kid) header{min-height:188px;display:flex;flex-direction:column;justify-content:flex-start;padding:26px 34px 62px;border-radius:26px;background:linear-gradient(110deg,#103e4e,#176a78 75%,#418b91);isolation:isolate}
+body:not(.kid) header:before{content:"";position:absolute;inset:auto 0 0;height:122px;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%20260%22%20preserveAspectRatio%3D%22xMidYMid%20slice%22%3E%3Cpath%20fill%3D%22%23d5e9e6%22%20opacity%3D%22.56%22%20d%3D%22M0%20158%20Q140%20145%20255%20160%20T510%20150%20Q665%20120%20790%20150%20T1040%20123%20L1200%20139%20V260%20H0Z%22%2F%3E%3Cpath%20fill%3D%22%238ab5b1%22%20opacity%3D%22.58%22%20d%3D%22M0%20181%20Q130%20163%20260%20177%20T560%20164%20Q720%20156%20835%20175%20T1200%20150%20V260%20H0Z%22%2F%3E%3Cpath%20fill%3D%22%232c7280%22%20opacity%3D%22.7%22%20d%3D%22M0%20209%20Q170%20187%20310%20207%20T620%20191%20Q800%20182%20930%20199%20T1200%20182%20V260%20H0Z%22%2F%3E%3Cpath%20fill%3D%22%23164653%22%20opacity%3D%22.84%22%20d%3D%22M0%20229%20Q190%20209%20355%20227%20T705%20215%20Q870%20211%201000%20221%20T1200%20210%20V260%20H0Z%22%2F%3E%3Cpath%20stroke%3D%22%23e6f4f1%22%20stroke-width%3D%223%22%20opacity%3D%22.7%22%20fill%3D%22none%22%20d%3D%22M0%20205%20Q150%20199%20300%20207%20T620%20205%20T940%20204%20T1200%20202%22%2F%3E%3C%2Fsvg%3E");background-repeat:no-repeat;background-position:center bottom;background-size:cover;z-index:-1}
+body:not(.kid) header:after{display:none}
+body:not(.kid) header h1{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:clamp(1.65rem,3.3vw,2.65rem);letter-spacing:.015em;margin:.12rem 0}
+body:not(.kid) header small{font-size:.75rem;letter-spacing:.17em}
+body:not(.kid) header .muted{color:#e5f2ee;font-size:1rem}
+body:not(.kid) #hello{margin:-28px 16px 22px;position:relative;z-index:1;padding:20px 26px;border:1px solid #dce8e4;box-shadow:0 12px 30px rgba(20,68,77,.09);display:grid;grid-template-columns:1fr auto;gap:6px 20px}
+body:not(.kid) #hello .row{grid-column:1 / -1;gap:18px}
+body:not(.kid) #hello .profile-greeting{gap:18px}
+body:not(.kid) #hello .avatar{width:72px;height:72px;border:3px solid white;outline:2px solid var(--atlantic);box-shadow:0 5px 18px rgba(22,70,83,.16)}
+body:not(.kid) #hello .profile-greeting .muted{font-size:.95rem}
+body:not(.kid) #hello h2{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:clamp(1.5rem,2.6vw,2.1rem);margin:1px 0 0}
+body:not(.kid) #hello #subline{grid-column:1;margin:0 0 0 90px;font-size:.9rem}
+body:not(.kid) #hello #out{grid-column:2;justify-self:end;margin-top:-44px;align-self:end;padding:9px 14px;font-size:.86rem}
+body:not(.kid) #hello #role{margin-right:132px;font-size:.8rem}
+body:not(.kid) .app-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;background:transparent;border:0;box-shadow:none;padding:0;margin:0 0 22px;position:static}
+body:not(.kid) .app-tab{border:1px solid #e0e9e7;background:#fffdfa;border-radius:17px;padding:17px 10px;font-size:1rem;box-shadow:0 6px 16px rgba(22,70,83,.055)}
+body:not(.kid) .app-tab.active{background:linear-gradient(135deg,#164653,#176a78);color:white;border-color:transparent;box-shadow:0 7px 17px rgba(22,70,83,.18)}
+body:not(.kid) .card{border-radius:23px;padding:25px;box-shadow:0 8px 24px rgba(22,70,83,.05)}
+body:not(.kid) .card h2{font-family:"Bricolage Grotesque",system-ui,sans-serif;color:#164653;font-size:1.4rem}
+body:not(.kid) #adult-week{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+body:not(.kid) #adult-week.active{display:grid}
+body:not(.kid) #adult-week>.week-switch-wrap{grid-column:1/-1;margin-bottom:0}
+body:not(.kid) #adult-week>.card{margin:0}
+body:not(.kid) #adult-week>.card:nth-of-type(1){grid-column:1/-1}
+body:not(.kid) #adult-week>.card:nth-of-type(1) .metric{font-size:2.45rem}
+body:not(.kid) .week-switch{padding:5px 0 9px}
+body:not(.kid) .girl-tabs{margin-top:15px}
+body:not(.kid) .session{padding:16px 0}
+body:not(.kid) button:focus-visible{outline:3px solid #8dbfc0;outline-offset:3px}
+@media(max-width:760px){body:not(.kid) main{padding:14px 12px 60px}body:not(.kid) header{min-height:166px;padding:22px 22px 60px}body:not(.kid) #hello{margin:-20px 7px 18px;padding:18px}body:not(.kid) #adult-week.active{grid-template-columns:1fr}body:not(.kid) #adult-week>.card:nth-of-type(1){grid-column:auto}body:not(.kid) .app-tabs{gap:7px}body:not(.kid) .app-tab{padding:12px 7px;font-size:.88rem}body:not(.kid) .card{padding:18px}}
+@media(max-width:470px){body:not(.kid) #hello .avatar{width:56px;height:56px}body:not(.kid) #hello .profile-greeting{gap:12px}body:not(.kid) #hello #subline{margin-left:68px}body:not(.kid) #hello #role{display:none}body:not(.kid) #hello #out{margin-top:-32px;padding:7px 5px;font-size:.78rem}body:not(.kid) .app-tab{font-size:.77rem;padding:12px 3px}body:not(.kid) .app-tab span{display:block;font-size:.77rem}body:not(.kid) header h1{font-size:1.7rem}}
 </style></head>
 <body><main>
 <header><small>Organización familiar</small><h1>🏠 Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></header>
@@ -307,7 +343,7 @@ footer{color:#738383}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.22 · Atlantic</footer></main>
+<footer>Casa Hermo Louro · v0.23 · Atlantic</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
