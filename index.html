@@ -438,6 +438,16 @@ body.kid[data-child="mati"]{--kid-accent:#d39441;--kid-pale:#fbefdc}
 .kid .kid-weeks{margin-bottom:18px}
 @media(max-width:420px){.kid #hello .avatar{width:83px;height:83px}.kid #hello .profile-greeting{gap:12px}.kid #subline{margin-left:96px;margin-right:10px}.kid .ring-card{grid-template-columns:115px minmax(0,1fr)}.kid .ring-wrap{width:112px;height:112px}.kid .ring-center strong{font-size:2.2rem}.kid .kid-summary-row{grid-template-columns:61px 18px minmax(0,1fr) 43px;gap:5px;font-size:.81rem}.kid .kid-summary-row strong{font-size:.78rem}}
 
+
+.catalog-panel{margin:12px 0;padding:14px;background:#edf5f2;border:1px solid #d6e7e1;border-radius:16px}
+.catalog-panel label{margin:5px 0 7px;font-size:.87rem}
+.catalog-panel select{width:100%;max-width:100%;padding:11px}
+.catalog-panel .catalog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.catalog-panel .catalog-actions button{font-size:.87rem;padding:10px 12px}
+.catalog-hint{font-size:.81rem;color:#53716f;margin:7px 0}
+.catalog-custom{display:flex;gap:7px;margin-top:9px}
+.catalog-custom input{min-width:0;flex:1}
+.catalog-custom button{flex:0 0 auto}
 </style></head>
 <body><main>
 <header><div class="brand-line"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 29 32 12l22 17" stroke="#F8F5E8" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 27v17h30V27" stroke="#F8F5E8" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 44V32h8v12" stroke="#F8F5E8" stroke-width="3" stroke-linecap="round"/><path d="M8 49c8-4 15-4 23 0s15 4 25 0M8 56c8-4 15-4 23 0s15 4 25 0" stroke="#B5E2DB" stroke-width="3" stroke-linecap="round"/></svg></span><div><small>Organización familiar</small><h1>Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></div></div></header>
@@ -501,7 +511,7 @@ body.kid[data-child="mati"]{--kid-accent:#d39441;--kid-pale:#fbefdc}
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.26 · Atlantic juvenil</footer></main>
+<footer>Casa Hermo Louro · v0.27 · Atlantic juvenil</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -693,6 +703,84 @@ async function deleteDraftStep(taskId){
  if(r.error){alert("No se pudo eliminar: "+r.error.message);return}
  await loadWeekManager();
 }
+
+// Catálogo local: las sugerencias son orientativas y se aplican solo a borradores.
+const thursdayCatalog=[
+ {group:"Cocina",title:"Limpiar frentes de armarios",steps:["Preparar paño y producto adecuado","Limpiar los frentes accesibles","Secar y recoger el material"]},
+ {group:"Cocina",title:"Limpiar el microondas",steps:["Retirar plato y accesorios","Limpiar el interior con producto adecuado","Limpiar el exterior y recolocar todo"]},
+ {group:"Cocina",title:"Ordenar un cajón de cocina",steps:["Vaciar y clasificar su contenido","Limpiar el cajón","Colocar los objetos ordenadamente"]},
+ {group:"Cocina",title:"Limpiar puertas y tiradores",steps:["Preparar paño","Limpiar puertas accesibles","Repasar tiradores y secar"]},
+ {group:"Cocina",title:"Ordenar la despensa",steps:["Revisar productos","Agrupar por tipo","Limpiar baldas accesibles y recolocar"]},
+ {group:"Salón y zonas comunes",title:"Quitar el polvo de estanterías",steps:["Retirar objetos con cuidado","Limpiar superficies accesibles","Volver a colocar los objetos"]},
+ {group:"Salón y zonas comunes",title:"Limpiar rodapiés",steps:["Preparar material","Limpiar rodapiés accesibles","Recoger y guardar material"]},
+ {group:"Salón y zonas comunes",title:"Limpiar puertas interiores",steps:["Limpiar superficies accesibles","Repasar pomos","Secar y recoger"]},
+ {group:"Salón y zonas comunes",title:"Ordenar un armario común",steps:["Sacar y clasificar objetos","Limpiar zona accesible","Recolocar de forma ordenada"]},
+ {group:"Salón y zonas comunes",title:"Limpiar interruptores y pomos",steps:["Usar paño ligeramente humedecido","Limpiar sin aplicar líquido directamente","Secar las superficies"]},
+ {group:"Lavandería y ropa",title:"Doblar y clasificar ropa limpia",steps:["Separar ropa por persona","Doblar las prendas","Dejar cada grupo en su sitio"]},
+ {group:"Lavandería y ropa",title:"Ordenar armario de ropa de casa",steps:["Revisar toallas y sábanas","Doblar y agrupar","Ordenar los estantes"]},
+ {group:"Lavandería y ropa",title:"Emparejar calcetines",steps:["Reunir calcetines limpios","Buscar parejas","Guardar los pares"]},
+ {group:"Lavandería y ropa",title:"Cambiar fundas de cojines",steps:["Retirar fundas","Colocar fundas limpias","Llevar las usadas a lavar"]},
+ {group:"Limpieza especial",title:"Limpiar cristales accesibles",steps:["Preparar paño y limpiacristales","Limpiar solo cristales al alcance desde el suelo","Secar y recoger"]},
+ {group:"Limpieza especial",title:"Limpiar espejos",steps:["Preparar material","Limpiar los espejos accesibles","Secar y guardar material"]},
+ {group:"Limpieza especial",title:"Vaciar y limpiar papeleras",steps:["Vaciar las papeleras","Limpiar interior y exterior","Colocar bolsas nuevas"]},
+ {group:"Limpieza especial",title:"Limpiar azulejos accesibles",steps:["Preparar paño","Limpiar azulejos accesibles","Secar y recoger"]},
+ {group:"Limpieza especial",title:"Aspirar sofás y cojines",steps:["Retirar cojines","Aspirar asientos y rincones","Aspirar cojines y recolocar"]},
+ {group:"Exterior y organización",title:"Barrer entrada o terraza",steps:["Recoger objetos sueltos","Barrer el suelo accesible","Recoger residuos y guardar escoba"]},
+ {group:"Exterior y organización",title:"Limpiar mobiliario exterior",steps:["Preparar material","Limpiar superficies accesibles","Secar y guardar material"]},
+ {group:"Exterior y organización",title:"Ordenar material de limpieza",steps:["Agrupar utensilios","Limpiar estantes accesibles","Ordenar sin manipular productos químicos"]},
+ {group:"Exterior y organización",title:"Organizar materiales para reciclar",steps:["Separar papel, envases y vidrio sin tocar objetos cortantes","Ordenar los recipientes","Dejar la zona recogida"]}
+];
+function customThursdayTasks(){
+ try{const a=JSON.parse(localStorage.getItem("casa_thursday_custom")||"[]");return Array.isArray(a)?a.filter(x=>typeof x==="string"&&x.trim()).slice(0,80):[]}catch(e){return []}
+}
+function catalogOptions(){
+ const all=[...thursdayCatalog,...customThursdayTasks().map(title=>({group:"Mis tareas",title,steps:[]}))];
+ let group="",html='<option value="">Elegir una tarea sugerida…</option>';
+ all.forEach((item,i)=>{if(item.group!==group){if(group)html+='</optgroup>';group=item.group;html+='<optgroup label="'+esc(group)+'">'}html+='<option value="'+i+'">'+esc(item.title)+'</option>'});
+ return html+(group?'</optgroup>':'');
+}
+function renderThursdayCatalog(sessionId){
+ return '<div class="catalog-panel"><strong>🌿 Ideas para el jueves</strong><p class="catalog-hint">Elige una tarea de 30 minutos o añade una propia. Puedes modificar su nombre y sus pasos antes de publicar.</p>'+
+ '<select id="catalog_'+sessionId+'" aria-label="Catálogo de tareas de jueves">'+catalogOptions()+'</select>'+
+ '<div class="catalog-actions"><button type="button" class="secondary" onclick="applyThursdayCatalog('+sessionId+',this)">Usar esta tarea</button></div>'+
+ '<label for="custom_'+sessionId+'">Guardar una tarea propia en este dispositivo</label>'+
+ '<div class="catalog-custom"><input id="custom_'+sessionId+'" placeholder="Ej. Ordenar el recibidor"><button type="button" class="secondary" onclick="addCustomThursday('+sessionId+')">＋ Guardar</button></div></div>';
+}
+function addCustomThursday(sessionId){
+ const input=document.getElementById("custom_"+sessionId),title=input.value.trim();
+ if(!title)return;
+ if(title.length>100){alert("Usa un nombre de hasta 100 caracteres.");return}
+ const arr=customThursdayTasks();
+ if(!arr.includes(title)){arr.push(title);try{localStorage.setItem("casa_thursday_custom",JSON.stringify(arr))}catch(e){alert("No se pudo guardar en este navegador.");return}}
+ const sel=document.getElementById("catalog_"+sessionId);
+ sel.innerHTML=catalogOptions();sel.value=String(thursdayCatalog.length+customThursdayTasks().indexOf(title));
+ input.value="";
+}
+async function applyThursdayCatalog(sessionId,btn){
+ const sel=document.getElementById("catalog_"+sessionId),idx=Number(sel.value);
+ if(!sel.value)return alert("Selecciona primero una tarea.");
+ const item=[...thursdayCatalog,...customThursdayTasks().map(title=>({title,steps:[]}))][idx];
+ if(!item)return;
+ const current=document.getElementById("title_"+sessionId);
+ if(!current)return;
+ const old=current.value.trim();
+ if(old&&old!==item.title&&!confirm("¿Sustituir el título actual por «"+item.title+"»?"))return;
+ btn.disabled=true;btn.textContent="Guardando…";
+ try{
+   const r=await client.rpc("update_draft_session",{p_session_id:sessionId,p_title:item.title});
+   if(r.error)throw r.error;
+   // No se borran pasos existentes. Solo se añaden sugerencias si no hay pasos.
+   const existing=(window.thursdayStepCache||{})[sessionId]||[];
+   if(item.steps.length&&!existing.length){
+     for(const description of item.steps){
+       const step=await client.rpc("add_draft_session_task",{p_session_id:sessionId,p_description:description});
+       if(step.error)throw step.error;
+     }
+   }
+   await loadWeekManager();
+ }catch(e){alert("No se pudo completar la tarea: "+e.message);await loadWeekManager()}
+}
+
 async function loadWeekManager(){
  let wr=await client.from("weeks").select("id,week_start,status").order("week_start",{ascending:false}).limit(6);
  if(wr.error){q("#weekManager").innerHTML='<p class="error">'+esc(wr.error.message)+'</p>';return}
@@ -710,13 +798,14 @@ async function loadWeekManager(){
    let tr=await client.from("session_tasks").select("id,session_id,description,position").in("session_id",ss.map(s=>s.id)).order("position");
    if(!tr.error)(tr.data||[]).forEach(t=>(taskMap[t.session_id]??=[]).push(t));
  }
+ window.thursdayStepCache=taskMap;
  let body=ss.map(s=>{
    let edit=w.status==="draft"&&s.session_type==="thursday"?'<div class="editrow"><input id="title_'+s.id+'" value="'+esc(s.title)+'"><button class="secondary" onclick="saveDraftTitle('+s.id+',this)">Guardar</button></div>':"";
    let steps="";
    if(s.session_type==="thursday"){
      const own=taskMap[s.id]||[];
      if(w.status==="draft"){
-       steps='<div class="thu-steps-editor"><small>Pasos del jueves</small>'+
+       steps=renderThursdayCatalog(s.id)+'<div class="thu-steps-editor"><small>Pasos del jueves</small>'+
          (own.length?own.map(t=>'<div class="step-edit"><span>'+esc(t.description)+'</span><button type="button" class="step-delete" onclick="deleteDraftStep('+t.id+')">✕</button></div>').join(""):'<p class="muted">Todavía no hay pasos. Añade los que necesite esta tarea.</p>')+
          '<div class="add-step-row"><input id="newstep_'+s.id+'" placeholder="Ej. Limpiar encimera" onkeydown="if(event.key===&quot;Enter&quot;){event.preventDefault();this.nextElementSibling.click()}"><button type="button" class="secondary" onclick="addDraftStep('+s.id+',this)">＋ Añadir paso</button></div></div>';
      }else if(own.length){
