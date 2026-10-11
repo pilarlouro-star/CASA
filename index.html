@@ -359,6 +359,85 @@ body.kid[data-child="mati"]{--kid-accent:#c7893d;--kid-pale:#fcf0dd;--kid-sun:#e
 .kid .kid-metric span{font-size:.73rem;color:#527078}
 @media(max-width:460px){.kid main{padding:10px 10px 70px}.kid #hello .avatar{width:72px;height:72px}.kid #subline{margin-left:89px}.kid .ring-wrap{width:112px;height:112px;flex-basis:112px}.kid .ring-center strong{font-size:2.1rem}.kid .ring-card{gap:12px;padding:15px}.kid .ring-msg{font-size:1rem}.kid .kid-metric span{font-size:.66rem}}
 
+
+/* ===== v0.26 · ATLANTIC JUVENIL · FIEL AL BOCETO ===== */
+body.kid{background:linear-gradient(180deg,#dcefed 0,#f7f3ea 440px,#f7f3ea 100%);--kid-accent:#267d8c;--kid-pale:#e6f3f1}
+body.kid[data-child="mica"]{--kid-accent:#2a9e9b;--kid-pale:#e0f4f0}
+body.kid[data-child="mati"]{--kid-accent:#d39441;--kid-pale:#fbefdc}
+.kid main{max-width:570px;padding:12px 12px 120px}
+.kid header{border-radius:22px 22px 0 0;margin:0;background:#fffcf5;border:1px solid #e3e7dd;box-shadow:none;padding:14px 20px}
+.kid header .brand-line{display:flex;align-items:center;gap:10px}
+.kid header .brand-logo{width:57px;height:57px;flex:0 0 57px;background:transparent;box-shadow:none}
+.kid header .brand-logo svg{width:57px;height:57px}
+.kid header .brand-logo svg path:nth-child(-n+3){stroke:#164653}
+.kid header .brand-logo svg path:last-child{stroke:#288d99}
+.kid header h1{font-size:1.2rem;line-height:1.08;letter-spacing:.09em;text-transform:uppercase;max-width:200px}
+.kid header small,.kid header .muted{display:none}
+.kid #hello{margin:0 0 12px;padding:24px 20px 75px;border-radius:0 0 23px 23px;background:linear-gradient(130deg,#fffdf8 4%,var(--kid-pale) 95%);box-shadow:0 7px 18px #16465312;border-top:0;min-height:205px}
+.kid #hello:before{content:'☀';position:absolute;right:22px;top:48px;color:#e9ae51;font-size:42px;opacity:.8}
+.kid[data-child="mica"] #hello:before{content:'♡';color:#dd9785}
+.kid[data-child="mati"] #hello:before{content:'☆';color:#d39441}
+.kid #hello:after{height:88px;bottom:-30px;background:radial-gradient(ellipse at 17% 65%,#9ccfd0 0 33%,transparent 34%),radial-gradient(ellipse at 65% 68%,#6eb4bd 0 44%,transparent 45%),radial-gradient(ellipse at 96% 90%,#318c9c 0 43%,transparent 44%);opacity:.72}
+.kid #hello .avatar{width:104px;height:104px;border:4px solid white;outline:2px solid var(--kid-accent)}
+.kid #hello .profile-greeting{gap:16px;align-items:center}
+.kid #hello .row .muted{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.18rem;color:#164653}
+.kid #hello h2{font-size:clamp(1.85rem,6vw,2.4rem);letter-spacing:-.04em}
+.kid #subline{margin:8px 50px 0 122px;font-size:.95rem;line-height:1.4;color:#3c6970}
+.kid #out{top:4px;right:8px;font-size:.72rem}
+.kid .card{border-radius:20px;padding:19px;margin:11px 0;box-shadow:0 5px 16px #1646530b;border:1px solid #e8e5dc;background:#fffcf7}
+.kid .ring-card{display:grid;grid-template-columns:144px minmax(0,1fr);gap:8px 15px;align-items:center}
+.kid .ring-card:before{content:'Tu semana';grid-column:1 / -1;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.35rem;font-weight:800;color:#164653;margin-bottom:2px}
+.kid .ring-wrap{width:138px;height:138px;flex-basis:auto}
+.kid .ring-center strong{font-size:2.7rem}
+.kid .ring-text{min-width:0}
+.kid .ring-week{font-size:.8rem}
+.kid .ring-msg{font-size:1.02rem;line-height:1.35}
+.kid .ring-legend{display:none}
+.kid #kidMetrics{margin:-4px 0 14px;gap:8px}
+.kid .kid-metric{background:#fffcf7;border:1px solid #e8e5dc;padding:10px 5px;border-radius:13px}
+.kid .kid-metric strong{font-size:1.08rem}
+.kid .kid-metric span{font-size:.76rem}
+.kid .kid-metric:nth-child(1){border-top:3px solid var(--kid-accent)}
+.kid .kid-metric:nth-child(2){border-top:3px solid #e8b55e}
+.kid .kid-metric:nth-child(3){border-top:3px solid #b6c3c0}
+.kid #today .today{background:#fffcf7;color:#164653;border:1px solid #e8e5dc;box-shadow:0 5px 16px #1646530b}
+.kid #today .today-kicker{color:var(--kid-accent);font-size:1rem}
+.kid #today .today h2{color:#164653;font-size:1.55rem}
+.kid #today .today-meta{color:#668080}
+.kid #today .today .checklist{background:linear-gradient(145deg,#fffefa,#f7f6ef);border:1px solid #e8e6dd;border-radius:17px;padding:5px 13px;margin-top:12px}
+.kid #today .today .check-item{color:#244650;border-bottom-color:#e6e9e4;padding:12px 3px;font-size:.97rem}
+.kid #today .today .check-item.checked span{color:#8c9d9c}
+.kid #today .today .check-item input{background:#fff;border-color:#a9c4c2}
+.kid #today .today .check-item input:checked{background:var(--kid-accent);border-color:var(--kid-accent)}
+.kid #today .today .check-item input:checked:after{border-color:#fff}
+.kid #today .today .mini-bar{background:#dce9e5}
+.kid #today .today .mini-bar span{background:var(--kid-accent)}
+.kid #today .today .mini-count,.kid #today .today .steps-left{color:#5c787b}
+.kid #today .today .done{background:var(--kid-accent);color:white;border-radius:999px;font-size:1.03rem;margin-top:16px}
+.kid #today .today .notice{background:#fff0d6;color:#705a2d}
+.kid #today .today .ok{background:#dcebe3;color:#315c4c}
+.kid .kid-summary-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+.kid .kid-summary-title h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;margin:0;font-size:1.25rem;color:#164653}
+.kid .kid-summary-title span{font-size:.79rem;color:#5c797c}
+.kid .kid-summary-row{display:grid;grid-template-columns:72px 22px minmax(0,1fr) 55px;gap:8px;align-items:center;border-top:1px solid #e9e8e0;padding:12px 3px;font-size:.91rem}
+.kid .kid-summary-row strong{font-size:.88rem}
+.kid .kid-summary-row .day-status{font-size:1.1rem;color:#96aaa9}
+.kid .kid-summary-row.approved .day-status{color:#279c83}
+.kid .kid-summary-row.completed .day-status{color:#e4a840}
+.kid .kid-summary-row.rejected .day-status{color:#c66e55}
+.kid .kid-summary-row.focus{background:var(--kid-pale);border-radius:12px;border-top-color:transparent;padding-left:9px;padding-right:9px}
+.kid .kid-summary-row small{color:#688184;letter-spacing:0;text-transform:none;font-size:.76rem;text-align:right}
+.kid .kid-summary-row .task-label{overflow-wrap:anywhere}
+.kid #kidMoneyPreview{margin-bottom:13px}
+.kid #kidMoneyPreview strong{font-size:1.25rem}
+.kid #kidMoneyPreview button{border-radius:99px}
+.kid #child{padding-bottom:45px}
+.kid #child>.app-tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(570px,100%);margin:0;border-radius:20px 20px 0 0;padding:8px 12px max(8px,env(safe-area-inset-bottom));background:#fffdf9;box-shadow:0 -5px 20px #16465318;z-index:50}
+.kid #child>.app-tabs .app-tab{background:transparent;border:0;box-shadow:none;color:#43636d;font-size:.84rem;padding:8px 4px;border-radius:10px}
+.kid #child>.app-tabs .app-tab.active{color:var(--kid-accent);background:var(--kid-pale);box-shadow:none}
+.kid .kid-weeks{margin-bottom:18px}
+@media(max-width:420px){.kid #hello .avatar{width:83px;height:83px}.kid #hello .profile-greeting{gap:12px}.kid #subline{margin-left:96px;margin-right:10px}.kid .ring-card{grid-template-columns:115px minmax(0,1fr)}.kid .ring-wrap{width:112px;height:112px}.kid .ring-center strong{font-size:2.2rem}.kid .kid-summary-row{grid-template-columns:61px 18px minmax(0,1fr) 43px;gap:5px;font-size:.81rem}.kid .kid-summary-row strong{font-size:.78rem}}
+
 </style></head>
 <body><main>
 <header><div class="brand-line"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 29 32 12l22 17" stroke="#F8F5E8" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 27v17h30V27" stroke="#F8F5E8" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 44V32h8v12" stroke="#F8F5E8" stroke-width="3" stroke-linecap="round"/><path d="M8 49c8-4 15-4 23 0s15 4 25 0M8 56c8-4 15-4 23 0s15 4 25 0" stroke="#B5E2DB" stroke-width="3" stroke-linecap="round"/></svg></span><div><small>Organización familiar</small><h1>Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></div></div></header>
@@ -408,8 +487,9 @@ body.kid[data-child="mati"]{--kid-accent:#c7893d;--kid-pale:#fcf0dd;--kid-sun:#e
    <progress id="progress" class="sr-only" value="0" max="90"></progress>
   </div>
   <div id="today"></div>
+  <div id="kidWeekSummary" class="card"><div class="kid-summary-title"><h2>☷ Tu semana</h2><span>Martes · Miércoles · Jueves</span></div><div id="kidSummaryRows"></div></div>
    <div id="kidMoneyPreview" class="card kid-money-preview"><div><small>💶 Mi dinero</small><div><strong id="kidPreviewAmount">5,00 €</strong> <span class="muted">por semana</span></div></div><button type="button" onclick="showAppTab('child','child-money',document.querySelector('#child .app-tab[data-tab=child-money]'))">Ver →</button></div>
-  <div class="card"><div class="row"><h2 class="rest-title">El resto de la semana</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div>
+  <details class="card" id="kidRestDetails"><summary style="cursor:pointer;font-weight:750;color:#164653">Ver detalles de las otras tareas ▾</summary><div class="row" style="margin-top:14px"><h2 class="rest-title">El resto de la semana</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></details>
   <details class="kid-weeks"><summary>📅 Ver otras semanas</summary><div id="childWeekSwitch" class="week-switch">Cargando semanas…</div></details>
  </div>
  <div id="child-extras" class="tab-panel">
@@ -421,7 +501,7 @@ body.kid[data-child="mati"]{--kid-accent:#c7893d;--kid-pale:#fcf0dd;--kid-sun:#e
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.25 · Atlantic juvenil</footer></main>
+<footer>Casa Hermo Louro · v0.26 · Atlantic juvenil</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -545,12 +625,14 @@ async function loadChildSessions(p){
    const wr=await client.from("weeks").select("id,week_start,status").in("id",weekIds).eq("status","published").order("week_start",{ascending:true});
    if(!wr.error)childWeeksCache=wr.data||[];
  }
- if(!childWeeksCache.length){q("#childWeekSwitch").innerHTML='<span class="muted">No hay semanas publicadas.</span>';q("#count").textContent="0 tareas";q("#approved").textContent=0;q("#progress").value=0;renderRing([],target,allow,null);q("#today").innerHTML="";q("#sessions").innerHTML='<p class="muted">Cuando Mamá o Papá publiquen la semana, tus tareas aparecerán aquí.</p>';return}
+ if(!childWeeksCache.length){q("#childWeekSwitch").innerHTML='<span class="muted">No hay semanas publicadas.</span>';q("#count").textContent="0 tareas";q("#approved").textContent=0;q("#progress").value=0;renderRing([],target,allow,null);q("#today").innerHTML="";if(q("#kidSummaryRows"))q("#kidSummaryRows").innerHTML="";q("#sessions").innerHTML='<p class="muted">Cuando Mamá o Papá publiquen la semana, tus tareas aparecerán aquí.</p>';return}
  const today=isoToday();
  const chosen=childWeeksCache.find(w=>today>=w.week_start&&today<=addDays(w.week_start,6))||childWeeksCache.find(w=>w.week_start>today)||childWeeksCache.at(-1);
  if(selectedChildWeekId&&!childWeeksCache.some(w=>w.id===selectedChildWeekId))selectedChildWeekId=null;
  selectedChildWeekId=selectedChildWeekId||chosen.id;renderChildWeekSwitch();
  const ss=all.filter(s=>s.week_id===selectedChildWeekId).sort((x,y)=>x.session_date.localeCompare(y.session_date));
+  const summary=q("#kidSummaryRows");
+  if(summary)summary.innerHTML=ss.map(s=>'<div class="kid-summary-row '+esc(s.status)+'"'+(s.status!=="approved"&&s.session_date>=today?' style="cursor:pointer" onclick="document.getElementById(\'today\').scrollIntoView({behavior:\'smooth\',block:\'start\'})"':'')+'><strong>'+esc(dayShort(s.session_date))+'</strong><span class="day-status">'+({approved:'●',completed:'◕',rejected:'!',pending:'○'}[s.status]||'○')+'</span><span class="task-label">'+esc(s.title)+'</span><small>'+Number(s.minutes||0)+' min</small></div>').join('')||'<p class="muted">No hay tareas asignadas.</p>';
  q("#count").textContent=ss.length+(ss.length===1?" tarea":" tareas");
  const approved=ss.filter(s=>s.status==="approved").reduce((n,s)=>n+(s.minutes||0),0);
  q("#approved").textContent=approved;q("#progress").value=approved;
