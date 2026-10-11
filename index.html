@@ -282,9 +282,34 @@ body:not(.kid) .session{padding:16px 0}
 body:not(.kid) button:focus-visible{outline:3px solid #8dbfc0;outline-offset:3px}
 @media(max-width:760px){body:not(.kid) main{padding:14px 12px 60px}body:not(.kid) header{min-height:166px;padding:22px 22px 60px}body:not(.kid) #hello{margin:-20px 7px 18px;padding:18px}body:not(.kid) #adult-week.active{grid-template-columns:1fr}body:not(.kid) #adult-week>.card:nth-of-type(1){grid-column:auto}body:not(.kid) .app-tabs{gap:7px}body:not(.kid) .app-tab{padding:12px 7px;font-size:.88rem}body:not(.kid) .card{padding:18px}}
 @media(max-width:470px){body:not(.kid) #hello .avatar{width:56px;height:56px}body:not(.kid) #hello .profile-greeting{gap:12px}body:not(.kid) #hello #subline{margin-left:68px}body:not(.kid) #hello #role{display:none}body:not(.kid) #hello #out{margin-top:-32px;padding:7px 5px;font-size:.78rem}body:not(.kid) .app-tab{font-size:.77rem;padding:12px 3px}body:not(.kid) .app-tab span{display:block;font-size:.77rem}body:not(.kid) header h1{font-size:1.7rem}}
+
+/* ===== v0.24 · IDENTIDAD Y RESUMEN FAMILIAR ===== */
+.brand-line{display:flex;align-items:center;gap:15px;position:relative;z-index:1}
+.brand-logo{width:66px;height:66px;flex:0 0 66px;border-radius:19px;background:rgba(255,255,255,.13);display:grid;place-items:center;border:1px solid rgba(255,255,255,.24)}
+.brand-logo svg{width:54px;height:54px}
+.family-strip{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:2px 0 18px;padding:12px 17px;border-radius:19px;background:#fffdfa;border:1px solid #e0e9e7}
+.family-strip .family-label{font-weight:800;color:var(--atlantic-dark);margin-right:8px;font-size:.85rem}
+.family-member{display:flex;align-items:center;gap:6px;padding:5px 9px 5px 5px;border-radius:999px;background:#edf4f1;font-size:.82rem;font-weight:750}
+.avatar-sm{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #fff;background:#d9eae6;display:inline-grid;place-items:center;flex:0 0 34px;color:#164653}
+.family-member.me{background:#d7ebe7;outline:1px solid #9bc7c3}
+.week-overview{grid-column:1/-1!important;margin:0!important}
+.week-overview h2{margin:4px 0 16px}
+.overview-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.overview-stat{background:#f1f6f3;border:1px solid #e2ebe7;border-radius:17px;padding:14px 12px}
+.overview-stat strong{display:block;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.8rem;color:#164653}
+.overview-stat span{font-size:.8rem;color:#577274}
+.people-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px}
+.person-tile{border:1px solid #dce7e2;border-radius:17px;background:#fafcf9;padding:14px}
+.person-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.person-head strong{display:block}.person-head small{display:block;font-size:.68rem;letter-spacing:.06em}
+.person-tile .avatar-sm{width:44px;height:44px;flex-basis:44px;border-color:#dceae6}
+.person-meter{height:8px;background:#dce8e3;border-radius:99px;overflow:hidden;margin:10px 0 6px}
+.person-meter span{display:block;height:100%;background:linear-gradient(90deg,#176a78,#69aaa7);border-radius:inherit}
+.person-note{font-size:.82rem;color:#577274}
+@media(max-width:620px){.brand-logo{width:52px;height:52px;flex-basis:52px}.brand-logo svg{width:44px;height:44px}.overview-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.family-strip{padding:11px}.family-member{font-size:.77rem}}
 </style></head>
 <body><main>
-<header><small>Organización familiar</small><h1>🏠 Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></header>
+<header><div class="brand-line"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 29 32 12l22 17" stroke="#F8F5E8" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 27v17h30V27" stroke="#F8F5E8" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 44V32h8v12" stroke="#F8F5E8" stroke-width="3" stroke-linecap="round"/><path d="M8 49c8-4 15-4 23 0s15 4 25 0M8 56c8-4 15-4 23 0s15 4 25 0" stroke="#B5E2DB" stroke-width="3" stroke-linecap="round"/></svg></span><div><small>Organización familiar</small><h1>Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></div></div></header>
 
 <section id="login" class="card"><h2>Entrar</h2><p class="muted">Usa tu cuenta familiar.</p><form id="form">
 <label>Correo</label><input id="email" type="email" autocomplete="username" required>
@@ -295,7 +320,7 @@ body:not(.kid) button:focus-visible{outline:3px solid #8dbfc0;outline-offset:3px
 <div id="hello" class="card"><div class="row"><div class="profile-greeting"><span id="profileAvatar" class="avatar avatar-fallback" aria-hidden="true">?</span><div><span class="muted">Hola,</span><h2 id="name"></h2></div></div><span id="role" class="pill"></span></div>
 <p id="subline" class="muted">Casa Hermo Louro</p><button id="out" class="secondary">Cerrar sesión</button></div>
 
-<div id="adult" class="hidden">
+<div id="adult" class="hidden"><div id="familyStrip" class="family-strip"><span class="family-label">Nuestra familia</span></div>
  <nav class="app-tabs" aria-label="Secciones">
   <button class="app-tab active" data-group="adult" data-tab="adult-week" onclick="showAppTab('adult','adult-week',this)">🏠 <span>Esta semana</span></button>
   <button class="app-tab" data-group="adult" data-tab="adult-money" onclick="showAppTab('adult','adult-money',this)">💶 <span>Rentas</span></button>
@@ -343,7 +368,7 @@ body:not(.kid) button:focus-visible{outline:3px solid #8dbfc0;outline-offset:3px
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.23 · Atlantic</footer></main>
+<footer>Casa Hermo Louro · v0.24 · Atlantic</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -364,6 +389,37 @@ function renderProfileAvatar(p){
  }else el.replaceWith(makeAvatarFallback(p));
 }
 function makeAvatarFallback(p){const x=document.createElement("span");x.id="profileAvatar";x.className="avatar avatar-fallback";x.setAttribute("aria-hidden","true");x.textContent=(p.name||"?").trim().charAt(0).toUpperCase()||"?";return x}
+let familyProfiles=[],currentFamilyProfile=null;
+function avatarMini(p){const u=avatarUrl(p.avatar_url);return u?'<img class="avatar-sm" src="'+esc(u)+'" alt="">':'<span class="avatar-sm">'+esc((p.name||'?').charAt(0).toUpperCase())+'</span>'}
+async function loadFamilyProfiles(p){
+ currentFamilyProfile=p;
+ const r=await client.from('profiles').select('id,name,role,avatar_url,weekly_minutes').eq('family_id',p.family_id).order('name');
+ if(r.error){q('#familyStrip').innerHTML='<span class="error">No se pudieron cargar los perfiles</span>';return}
+ familyProfiles=r.data||[];
+ q('#familyStrip').innerHTML='<span class="family-label">Nuestra familia</span>'+familyProfiles.map(x=>'<span class="family-member'+(x.id===p.id?' me':'')+'">'+avatarMini(x)+'<span>'+esc(x.name)+'</span></span>').join('');
+}
+async function renderFamilyOverview(sessions){
+ const root=q('#weekOverview'),people=q('#peopleOverview');if(!root||!people)return;
+ const weekId=selectedAdultWeekId;
+ if(!weekId){root.innerHTML='<p class="muted">Selecciona una semana publicada.</p>';people.innerHTML='';return}
+ const adults=familyProfiles.filter(p=>p.role==='adult'),children=familyProfiles.filter(p=>p.role==='child');
+ const ar=await client.from('adult_tasks').select('id,assigned_to,status').eq('week_id',weekId);
+ const aa=ar.error?[]:(ar.data||[]);
+ const completed=sessions.filter(s=>s.status==='approved').length;
+ const waiting=sessions.filter(s=>s.status==='completed').length;
+ const adultDone=aa.filter(t=>t.status==='completed').length;
+ const stats=[[sessions.length,'Sesiones de las niñas'],[completed,'Aprobadas'],[waiting,'Esperando aprobación'],[adultDone+' / '+aa.length,'Tareas de adultos']];
+ root.innerHTML=stats.map(([n,l])=>'<div class="overview-stat"><strong>'+esc(n)+'</strong><span>'+esc(l)+'</span></div>').join('');
+ const sorted=[...adults,...children];
+ people.innerHTML=sorted.map(p=>{
+  const isAdult=p.role==='adult',own=isAdult?aa.filter(t=>t.assigned_to===p.id):sessions.filter(s=>s.assigned_to===p.id);
+  const done=isAdult?own.filter(t=>t.status==='completed').length:own.filter(s=>s.status==='approved').reduce((n,s)=>n+Number(s.minutes||0),0);
+  const total=isAdult?own.length:Number(p.weekly_minutes||90),pct=Math.min(100,Math.round(done/(total||1)*100));
+  const info=isAdult?done+' de '+total+' tareas completadas':done+' de '+total+' minutos aprobados';
+  const waiting=isAdult?0:own.filter(s=>s.status==='completed').length;
+  return '<div class="person-tile"><div class="person-head">'+avatarMini(p)+'<div><strong>'+esc(p.name)+'</strong><small>'+(isAdult?'Tareas de adultos':'Trabajo semanal')+'</small></div></div><div class="person-note">'+esc(info)+'</div><div class="person-meter"><span style="width:'+pct+'%"></span></div><div class="person-note">'+pct+' %'+(waiting?' · '+waiting+' pendiente'+(waiting===1?'':'s')+' de aprobación':'')+'</div></div>';
+ }).join('');
+}
 const status=s=>({pending:"Pendiente",completed:"Hecha · pendiente de aprobación",approved:"Aprobada",rejected:"Revisar"}[s]||s);
 
 function toggleSteps(sessionId,btn){const box=document.getElementById("steps_"+sessionId);if(!box)return;const opening=box.classList.contains("hidden");box.classList.toggle("hidden");if(opening)openSteps.add(sessionId);else openSteps.delete(sessionId);btn.textContent=opening?"Ocultar pasos ▴":"Ver pasos ▾"}
@@ -604,10 +660,11 @@ async function loadAdultSessions(){
  const r=await query;
  if(r.error){q("#adultSessions").innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return}
  const all=r.data||[];
+ await renderFamilyOverview(all);
  const ids=[...new Set(all.map(s=>s.assigned_to))];
- const pr=ids.length?await client.from("profiles").select("id,name").in("id",ids):{data:[],error:null};
+ const pr=ids.length?await client.from("profiles").select("id,name,avatar_url").in("id",ids):{data:[],error:null};
  const names={};if(!pr.error)(pr.data||[]).forEach(p=>names[p.id]=p.name);
- const girls=ids.map(id=>({id,name:names[id]||"Niña"})).sort((a,b)=>a.name.localeCompare(b.name,"es"));
+ const girls=ids.map(id=>({id,name:names[id]||"Niña",avatar_url:(pr.data||[]).find(x=>x.id===id)?.avatar_url})).sort((a,b)=>a.name.localeCompare(b.name,"es"));
  if(girls.length&&!girls.some(g=>g.id===selectedGirlId))selectedGirlId=girls[0].id;
  q("#girlTabs").innerHTML=girls.map(g=>'<button class="girl-tab '+(g.id===selectedGirlId?'active':'')+'" onclick="selectGirl(\''+g.id+'\')">'+esc(g.name)+'</button>').join("");
  const ss=selectedGirlId?all.filter(s=>s.assigned_to===selectedGirlId):all;
@@ -719,6 +776,7 @@ async function show(user){
    restoreAppTab('child');
    await loadChildAllowance(p.id);
  }else{
+   await loadFamilyProfiles(p);
    await loadWeekManager();
    await loadAdultWeekSwitch();
    await loadAdultTasks();
