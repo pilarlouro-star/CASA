@@ -746,7 +746,7 @@ function catalogOptions(){
  return html+(group?'</optgroup>':'');
 }
 function renderThursdayCatalog(sessionId){
- return '<div class="catalog-panel"><strong>🌿 Ideas para el jueves</strong><p class="catalog-hint">Elige una tarea de 30 minutos o añade una propia. Puedes modificar su nombre y sus pasos antes de publicar.</p>'+
+ return '<div class="catalog-panel"><strong>🌿 Ideas para el jueves</strong><p class="catalog-hint">Elige una tarea de 30 minutos o añade una propia. Puedes modificar su nombre y sus pasos mientras esté pendiente.</p>'+
  '<select id="catalog_'+sessionId+'" aria-label="Catálogo de tareas de jueves">'+catalogOptions()+'</select>'+
  '<div class="catalog-actions"><button type="button" class="secondary" onclick="applyThursdayCatalog('+sessionId+',this)">Usar esta tarea</button></div>'+
  '<label for="custom_'+sessionId+'">Guardar una tarea propia en este dispositivo</label>'+
