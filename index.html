@@ -307,6 +307,58 @@ body:not(.kid) button:focus-visible{outline:3px solid #8dbfc0;outline-offset:3px
 .person-meter span{display:block;height:100%;background:linear-gradient(90deg,#176a78,#69aaa7);border-radius:inherit}
 .person-note{font-size:.82rem;color:#577274}
 @media(max-width:620px){.brand-logo{width:52px;height:52px;flex-basis:52px}.brand-logo svg{width:44px;height:44px}.overview-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.family-strip{padding:11px}.family-member{font-size:.77rem}}
+
+/* ===== v0.25 · ATLANTIC JUVENIL ===== */
+body.kid{--kid-accent:#18798b;--kid-pale:#e5f2f1;--kid-sun:#eebd72;background:linear-gradient(180deg,#eaf4f2 0,#f7f5ed 460px,#f5f2eb 100%)}
+body.kid[data-child="mica"]{--kid-accent:#289d9a;--kid-pale:#e2f5f1;--kid-sun:#e8ae7e}
+body.kid[data-child="mati"]{--kid-accent:#c7893d;--kid-pale:#fcf0dd;--kid-sun:#e6a84e}
+.kid main{max-width:740px;padding:12px 15px 80px}
+.kid header{background:#fffdf8;color:#164653;border:1px solid #dbe9e4;box-shadow:0 6px 18px #1646530d;padding:12px 18px;border-radius:20px}
+.kid header:before{display:none}
+.kid header h1{font-size:1.02rem;letter-spacing:.035em}
+.kid header .brand-mark{width:42px;height:42px}
+.kid header .brand-lockup{gap:9px}
+.kid #hello{position:relative;overflow:hidden;display:block;padding:24px 18px 43px;margin:12px 0 12px;border-radius:23px;background:linear-gradient(125deg,#fdfcf6,var(--kid-pale));border:1px solid #dce8e1;box-shadow:0 8px 22px #16465312}
+.kid #hello:after{content:"";position:absolute;bottom:-25px;left:-4%;width:108%;height:68px;background:radial-gradient(ellipse at 15% 40%,#a5d6d4 0 35%,transparent 36%),radial-gradient(ellipse at 68% 70%,#72b5bb 0 46%,transparent 47%);opacity:.56;pointer-events:none}
+.kid #hello .row{display:flex;align-items:center;justify-content:flex-start;position:relative;z-index:1}
+.kid #hello .profile-greeting{align-items:center;gap:17px}
+.kid #hello .profile-greeting>div{display:block}
+.kid #hello .avatar{width:86px;height:86px;border:4px solid #fff;outline:2px solid var(--kid-accent);box-shadow:0 6px 16px #16465326}
+.kid #hello .row .muted{display:block;font-size:1.12rem;color:#40616a}
+.kid #hello h2{font-size:clamp(1.7rem,5vw,2.3rem);color:#164653;line-height:1.08;margin-top:2px}
+.kid #hello h2:after{content:""}
+.kid #subline{position:relative;z-index:1;margin:10px 0 0 104px;font-size:.92rem;color:#436a70}
+.kid #out{position:absolute;top:5px;right:10px;z-index:2;font-size:.75rem;color:#52747a}
+.kid .card{background:#fffdf8;border:1px solid #e3e8df;box-shadow:0 8px 24px #1646530d;border-radius:22px}
+.kid .ring-card{align-items:center;gap:18px;padding:20px;background:#fffefa}
+.kid .ring-wrap{width:142px;height:142px;flex-basis:142px}
+.kid .seg-approved{stroke:var(--kid-accent)}
+.kid .ring-center strong{color:#164653}
+.kid .ring-msg{font-size:1.12rem}
+.kid .ring-legend{margin-top:12px;gap:7px}
+.kid .ring-legend>span{display:block;width:100%}
+.kid .today{background:linear-gradient(160deg,#164653,#1e6973);border:0}
+.kid[data-child="mica"] .today{background:linear-gradient(160deg,#145c65,#218d8c)}
+.kid[data-child="mati"] .today{background:linear-gradient(160deg,#715330,#ae7c3b)}
+.kid .today h2{font-size:1.65rem}
+.kid .today .done.ready{background:#d1efe5}
+.kid .kid-row{padding:13px 0 13px 16px}
+.kid .kid-row.st-approved:before{background:var(--kid-accent)}
+.kid .kid-weeks{background:#fffdf8;border:1px solid #e3e8df;border-radius:16px;padding:8px 15px}
+.kid .app-tabs{position:sticky;bottom:8px;top:auto;z-index:20;background:#fffdf9f5;border:1px solid #dce7e2;box-shadow:0 8px 30px #16465320;border-radius:20px;padding:6px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:15px 0}
+.kid .app-tab{min-width:0;white-space:normal;padding:12px 5px;border-radius:14px;color:#42656b;font-size:.92rem}
+.kid .app-tab.active{background:var(--kid-accent);color:white}
+.kid .app-tab span{display:inline}
+.kid .kid-money-preview{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer}
+.kid .kid-money-preview strong{font-size:1.4rem;color:#164653}
+.kid .kid-money-preview .muted{font-size:.83rem}
+.kid .kid-money-preview button{background:var(--kid-pale);color:#164653;padding:10px}
+.kid .kid-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:13px}
+.kid .kid-metric{background:#f0f5f2;border-radius:12px;padding:9px 6px;text-align:center}
+.kid .kid-metric strong{display:block;font-size:1.05rem;color:#164653}
+.kid .kid-metric span{font-size:.73rem;color:#527078}
+@media(max-width:460px){.kid main{padding:10px 10px 70px}.kid #hello .avatar{width:72px;height:72px}.kid #subline{margin-left:89px}.kid .ring-wrap{width:112px;height:112px;flex-basis:112px}.kid .ring-center strong{font-size:2.1rem}.kid .ring-card{gap:12px;padding:15px}.kid .ring-msg{font-size:1rem}.kid .kid-metric span{font-size:.66rem}}
+
 </style></head>
 <body><main>
 <header><div class="brand-line"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 29 32 12l22 17" stroke="#F8F5E8" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 27v17h30V27" stroke="#F8F5E8" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 44V32h8v12" stroke="#F8F5E8" stroke-width="3" stroke-linecap="round"/><path d="M8 49c8-4 15-4 23 0s15 4 25 0M8 56c8-4 15-4 23 0s15 4 25 0" stroke="#B5E2DB" stroke-width="3" stroke-linecap="round"/></svg></span><div><small>Organización familiar</small><h1>Casa Hermo Louro</h1><div class="muted">Nuestra casa, nuestro trabajo compartido.</div></div></div></header>
@@ -356,6 +408,7 @@ body:not(.kid) button:focus-visible{outline:3px solid #8dbfc0;outline-offset:3px
    <progress id="progress" class="sr-only" value="0" max="90"></progress>
   </div>
   <div id="today"></div>
+   <div id="kidMoneyPreview" class="card kid-money-preview"><div><small>💶 Mi dinero</small><div><strong id="kidPreviewAmount">5,00 €</strong> <span class="muted">por semana</span></div></div><button type="button" onclick="showAppTab('child','child-money',document.querySelector('#child .app-tab[data-tab=child-money]'))">Ver →</button></div>
   <div class="card"><div class="row"><h2 class="rest-title">El resto de la semana</h2><span id="count" class="pill"></span></div><div id="sessions">Cargando…</div></div>
   <details class="kid-weeks"><summary>📅 Ver otras semanas</summary><div id="childWeekSwitch" class="week-switch">Cargando semanas…</div></details>
  </div>
@@ -368,7 +421,7 @@ body:not(.kid) button:focus-visible{outline:3px solid #8dbfc0;outline-offset:3px
 </div>
 <div id="err" class="card hidden"></div>
 </section>
-<footer>Casa Hermo Louro · v0.24 · Atlantic</footer></main>
+<footer>Casa Hermo Louro · v0.25 · Atlantic juvenil</footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -476,6 +529,10 @@ function renderRing(ss,target,allow,wk){
  if(waiting)leg.push('<span><i style="background:var(--kid-wait)"></i>Esperando OK</span>');
  if(ss.some(s=>s.status==="rejected"))leg.push('<span><i style="background:var(--kid-redo)"></i>Para repasar</span>');
  q("#ringLegend").innerHTML=leg.join("");
+ const remaining=Math.max(0,target-approved-waiting);
+ let metrics=q("#kidMetrics");
+ if(!metrics){metrics=document.createElement("div");metrics.id="kidMetrics";metrics.className="kid-metrics";q("#ringCard").insertAdjacentElement("afterend",metrics)}
+ metrics.innerHTML='<div class="kid-metric"><strong>'+approved+' min</strong><span>Aprobados</span></div><div class="kid-metric"><strong>'+waiting+' min</strong><span>En revisión</span></div><div class="kid-metric"><strong>'+remaining+' min</strong><span>Por aprobar</span></div>';
 }
 async function loadChildSessions(p){
  currentChildProfile=Object.assign({},(kidProfile&&kidProfile.id===p.id)?kidProfile:{},p);
@@ -707,7 +764,7 @@ async function loadChildAllowance(childId){
  const w=childWeeksCache.find(x=>x.id===selectedChildWeekId);
  q("#childAllowanceWeek").textContent=w?"Semana "+fmtDate(w.week_start)+" – "+fmtDate(addDays(w.week_start,6)):"";
  if(!a){q("#allowanceState").innerHTML='<p class="muted">Aún no hay paga para esta semana.</p>';return}
- q("#allowance").textContent=a.amount;
+ q("#allowance").textContent=a.amount;const preview=q("#kidPreviewAmount");if(preview)preview.textContent=euro(a.amount);
  const labels={locked:"🔒 Aún te faltan minutos",earned:"🎉 ¡Paga conseguida!",claimed:"⏳ Pedida. Mamá o Papá te la darán pronto",paid:"✓ Cobrada"};
  let action=a.status==="earned"?'<button class="done" onclick="claimAllowance('+a.week_id+',this)">Pedir mi paga 💸</button>':"";
  q("#allowanceState").innerHTML='<div class="'+(a.status==="paid"?"ok":"notice")+'"><strong>'+labels[a.status]+'</strong></div>'+action;
@@ -767,7 +824,7 @@ async function show(user){
  const r=await client.from("profiles").select("id,family_id,name,role,weekly_allowance,weekly_minutes,avatar_url").eq("id",user.id).single();
  q("#login").classList.add("hidden");q("#app").classList.remove("hidden");
  if(r.error||!r.data){q("#err").classList.remove("hidden");q("#err").innerHTML='<p class="error">'+esc(r.error?.message||"Perfil no encontrado")+'</p>';return}
- const p=r.data;renderProfileAvatar(p);document.body.classList.toggle("kid",p.role==="child");if(p.role==="child"){kidProfile=p;q("#subline").textContent=dayLong(isoToday());}q("#name").textContent=p.name;q("#role").textContent=p.role==="adult"?"Adulto":"Miembro joven";
+ const p=r.data;renderProfileAvatar(p);document.body.classList.toggle("kid",p.role==="child");if(p.role==="child"){kidProfile=p;document.body.dataset.child=p.name==="Pitu"?"pitu":p.name==="Mica"?"mica":p.name==="Mati"?"mati":"other";const hour=new Date().getHours();q("#subline").textContent="Pequeños pasos, grandes días · "+dayLong(isoToday());}q("#name").textContent=p.name;q("#role").textContent=p.role==="adult"?"Adulto":"Miembro joven";
  q("#adult").classList.toggle("hidden",p.role!=="adult");q("#child").classList.toggle("hidden",p.role!=="child");
  if(p.role==="child"){
    q("#target").textContent=p.weekly_minutes??90;q("#progress").max=p.weekly_minutes??90;q("#allowance").textContent=p.weekly_allowance??5;
